@@ -1,0 +1,11 @@
+|-------+--------+---------------------------------------------------------------+---------------------------------------------------------------------------|
+| Done? | Cited? | Title                                                         | URL                                                                       |
+|-------+--------+---------------------------------------------------------------+---------------------------------------------------------------------------|
+|       |        | A refined decompiler to generate C code with high readability | http://onlinelibrary.wiley.com.focus.lib.kth.se/doi/10.1002/spe.2138/full |
+|       |        | Shallow Embedding of DSLs via Online Partial Evaluation       | http://compilers.cs.uni-saarland.de/papers/gpce15.pdf                     |
+|       |        | The Rust Programming Language 2                               | https://doc.rust-lang.org/book/second-edition/ch15-04-rc.html             |
+|       |        | Polymorphic embedding of DSLs                                 |                                                                           |
+|       |        | Concealing the deep embedding of DSLs                         |                                                                           |
+
+
+

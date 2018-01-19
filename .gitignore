@@ -1,0 +1,7 @@
+*.swp
+compiler-plugin*
+interpreter*
+kompics-rust*
+opposition/Thesis*
+papers/*.pdf
+
