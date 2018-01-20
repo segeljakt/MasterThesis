@@ -1,0 +1,16 @@
+[package]
+name = "dynamic-linking"
+version = "0.1.0"
+authors = ["Klas <klasseg@kth.se>"]
+
+[dependencies]
+dylib = "0.0.3"
+
+[lib]
+name = "dynamic"
+path = "src/lib.rs"
+crate_type = ["cdylib"]
+
+[[bin]]
+name = "dynamic"
+path = "src/bin.rs"

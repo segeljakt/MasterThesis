@@ -1,7 +1,9 @@
 *.swp
+*.DS_Store
 compiler-plugin*
 interpreter*
 kompics-rust*
 opposition/Thesis*
 papers/*.pdf
+target/
 
