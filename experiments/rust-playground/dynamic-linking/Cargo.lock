@@ -1,0 +1,23 @@
+[[package]]
+name = "dylib"
+version = "0.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "libc 0.2.36 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "dynamic-linking"
+version = "0.1.0"
+dependencies = [
+ "dylib 0.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "libc"
+version = "0.2.36"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[metadata]
+"checksum dylib 0.0.3 (registry+https://github.com/rust-lang/crates.io-index)" = "f06c13073013a912b363eee1433572499a2028a6b05432dad09383124d64731e"
+"checksum libc 0.2.36 (registry+https://github.com/rust-lang/crates.io-index)" = "1e5d97d6708edaa407429faa671b942dc0f2727222fb6b6539bf1db936e4b121"
