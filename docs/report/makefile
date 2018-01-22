@@ -17,15 +17,14 @@ DST_PATH=$(DOC).$(DST_FMT)
 STL_PATH=/Users/Klas/Git/writing/styles/harvard-cite-them-right.csl
 BIB_PATH=~/.vim/bibtex/library.bib
 TEM_PATH=/Users/Klas/Git/writing/markdown-template.latex
-LST_PATH=/Users/Klas/Git/writing/markdown-listings.latex
 # Flags
 DOC_FLAGS += --bibliography $(BIB_PATH)
 DOC_FLAGS += --csl=$(STL_PATH)
 DOC_FLAGS += --template $(TEM_PATH)
 DOC_FLAGS += -N
-DOC_FLAGS += -mathml
+#DOC_FLAGS += -mathml
 DOC_FLAGS += --listings
-DOC_FLAGS += -H $(LST_PATH)
+DOC_FLAGS += --pdf-engine=pdflatex
 #-------------------------------------------------------------------------------
 $(DOC):
 	$(DOCC) $(SRC_PATH) $(DOC_FLAGS) -o $(DST_PATH)
