@@ -1,10 +1,26 @@
-|-------+--------+---------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Done? | Cited? | Title                                                         | URL                                                                                                                                                                                                                                                                   |
-|-------+--------+---------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|       |        | A refined decompiler to generate C code with high readability | http://onlinelibrary.wiley.com.focus.lib.kth.se/doi/10.1002/spe.2138/full                                                                                                                                                                                             |
-|       |        | Shallow Embedding of DSLs via Online Partial Evaluation       | http://compilers.cs.uni-saarland.de/papers/gpce15.pdf                                                                                                                                                                                                                 |
-|       |        | The Rust Programming Language 2                               | https://doc.rust-lang.org/book/second-edition/ch15-04-rc.html                                                                                                                                                                                                         |
-|       |        | Polymorphic embedding of DSLs                                 |                                                                                                                                                                                                                                                                       |
-|       |        | Concealing the deep embedding of DSLs                         |                                                                                                                                                                                                                                                                       |
-|       |        | A Fast Abstract Syntax Tree Interpreter for R                 | http://delivery.acm.org.focus.lib.kth.se/10.1145/2580000/2576205/p89-kalibera.pdf?ip=130.237.29.138&id=2576205&acc=ACTIVE%20SERVICE&key=74F7687761D7AE37%2EE53E9A92DC589BF3%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&__acm__=1516387571_dbe6740e4e967a7622912723fea23091 |
-|       |        | Code Generation with Templates                                | https://link-springer-com.focus.lib.kth.se/content/pdf/10.2991%2F978-94-91216-56-5.pdf                                                                                                                                                                                |
+```
+
+|--------------------------------------------------------------------------+-------|
+| Title                                                                    | Cited |
+|--------------------------------------------------------------------------+-------|
+| Shallow Embedding of DSLs via Online Partial Evaluation                  |       |
+| Apache Flink: Stream and Batch Processing in a Single Engine             |       |
+| The Rust Programming Language 2                                          |       |
+| General purpose languages should be metalanguages                        |       |
+| Scala-virtualized                                                        |       |
+|--------------------------------------------------------------------------+-------|
+| Polymorphic embedding of DSLs                                            |       |
+| Concealing the deep embedding of DSLs                                    |       |
+| A Fast Abstract Syntax Tree Interpreter for R                            |       |
+| Code Generation with Templates                                           |       |
+| A Python Wrapper Code Generator for Dynamic Libraries                    |       |
+| Ziria: A DSL for wireless systems programming                            |       |
+| The Scala Programming Language                                           |       |
+| Data stream processing via code annotations                              |       |
+| A refined decompiler to generate C code with high readability            |       |
+| Deeply Reifying Running Code for Constructing a Domain-Specific Language |       |
+| Multi-Target C Code Generation from MATLAB                               |       |
+| A Heterogeneous Parallel Framework for Domain-Specific Languages         |       |
+|--------------------------------------------------------------------------+-------|
+
+```
