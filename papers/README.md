@@ -9,8 +9,10 @@
 | General purpose languages should be metalanguages                                 |       |
 | Scala-virtualized                                                                 |       |
 | Ziria: A DSL for wireless systems programming                                     |       |
-|-----------------------------------------------------------------------------------+-------|
 | Polymorphic embedding of DSLs                                                     |       |
+| Flare: Native Compilation for Heterogeneous Workloads in Apache Spark             |       |
+|-----------------------------------------------------------------------------------+-------|
+| Weld: Rethinking the Interface Between Data-Intensive Libraries                   |       |
 | Concealing the deep embedding of DSLs                                             |       |
 | A Fast Abstract Syntax Tree Interpreter for R                                     |       |
 | Code Generation with Templates                                                    |       |
@@ -122,3 +124,80 @@
   * **Performance**: Performance should be reasonable in large-scale use.
 * Not every DSL needs to be typed
 * Hierarchical definition of DSLs
+
+# Flare: Native Compilation for Heterogeneous Workloads in Apache Spark
+
+* Flare - Bypass inefficient abstraction layers of Spark
+  1. Compilation to native code
+  2. Replacing parts of Spark runtime
+  3. Extending the scope of optimization and code generation to UDFs
+  * Small clusters, strong machines, faults are improbable
+  * Could generate LLVM directly instead of C ~20-30% faster compilation
+  * OpenMP ~= Pthreads in performance
+  * Scaling up > Scaling out (easier to optimize)
+* Heterogenous Workloads: Interleaving UDFs with DataFrame operations
+* UDFs - Black boxes to the query optimizer
+* Delite - Compiler framework for high performance DSLs, GPU
+* TPC-H - Workload metric
+* Scaling out = More inefficiently used machines
+* Global warming
+* Flare on 1 Thread >= Spark on 10 nodes and linear scaling
+* Spark: RDD
+  * Lazily evaluated, lineage
+  * Limited visibility for optimizations, and Interpretive overhead
+* Spark SQL: DataFrames
+  * Query plan
+  * Catalyst: Rule/cost based query optimizations
+  * Tungsten: JVM allocation optimizations
+  * Deferred API:
+    1. Optimizations
+    2. Front end API
+    3. Host language integration
+  * Multi-stage-programming
+* Flare L1: Native compilation within Tungsten
+  * Add rules to catalyst
+  * Trigger Tungsten to invoke LMS to compile
+  * JNI compiled code
+* Flare L2: Compile whole queries instead of stages
+  * Let users pick which DataFrames to optimize
+  * Compiled CSV and Parquet readers, specialized to schema
+  * OpenMP
+  * NUMA, maximize local processing (avoid non-local memory)
+* Flare L3: Delite, intermediate layer between query plan and generated code
+  * Inject LMS into UDFs
+    * Rep[T] (Override +, -, \*)
+  * Delite is built on top of LMS, compiles mixes of DSLs
+    * GPU
+    * OptiQL API - Code generation
+    * DMLL - Parallelization, heterogenous hardware optimizations
+* Spark scales well because of internal overhead
+* PageRank: Laptop > 128 core cluster
+* Apache Parquet: Data representation
+* Iterative Map-Reduce: *Twiter*, *Haloop*
+* *Hive*, *Dremel*, *Impala*, *Shark*, *Spark SQL*
+* *SnappyData*: *Spark* + Transactional Memory
+* *Asterix*,*Stratosphere*/*Apache Flink*, *Tupleware*: Improves *Spark*
+  * *Tupleware* integrates UDFs into the LLVM level
+* Query compilation
+  * Templates: *Daytona*, *HIQUE*
+  * General purpose compilers: *HyPer*, *Hekaton*
+  * DSL compiler frameworks: *Legobase*, *DryadLINQ*, *DBLAB*
+* Embedded DSL frameworks and intermediate languages
+  * *Voodoo*, *Delite*, *DMLL,* *Weld*, *Steno*
+* Thesis: Generic high-performance DSL compiler framework for Flink
+* Identify bottlenecks
+  * Tight code
+  * CPU (Not IO) is the source of bottlenecks
+  * Single threaded programs outperform clusters
+* "Modern data analytics need to combine multiple programming models and make e cient use of modern hardware with large memory, many cores, and accelerators such as GPUs"
+* "We believe that multi-stage APIs, in the spirit of DataFrames, and compiler systems like Flare and Delite, will play an increasingly important role in the future to satisfy the increasing demand for  exible and uni ed analytics with high e ciency."
+
+# CITATION NEEDED
+
+* Wikipedia (https://en.wikipedia.org/wiki/Domain-specific_language)
+  * domain-specific languages are less comprehensive.
+  * domain-specific languages are much more expressive in their domain.
+  * domain-specific languages should exhibit minimal redundancy.
+* JVM does not work well with GPU
+* Rust can be faster than C in some cases (due to ownership)
+* Add info about why project is currently missing an IR
