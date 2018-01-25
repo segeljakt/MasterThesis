@@ -11,7 +11,10 @@
 | Ziria: A DSL for wireless systems programming                                     |       |
 | Polymorphic embedding of DSLs                                                     |       |
 | Flare: Native Compilation for Heterogeneous Workloads in Apache Spark             |       |
+| A Heterogeneous Parallel Framework for Domain-Specific Languages                  |       |
 |-----------------------------------------------------------------------------------+-------|
+| Language Virtualization for Heterogeneous Parallel Computing                      |       |
+| Voodoo - A Vector Algebra for Portable Database Performance on Modern Hardware    |       |
 | Weld: Rethinking the Interface Between Data-Intensive Libraries                   |       |
 | Concealing the deep embedding of DSLs                                             |       |
 | A Fast Abstract Syntax Tree Interpreter for R                                     |       |
@@ -22,7 +25,6 @@
 | A refined decompiler to generate C code with high readability                     |       |
 | Deeply Reifying Running Code for Constructing a Domain-Specific Language          |       |
 | Multi-Target C Code Generation from MATLAB                                        |       |
-| A Heterogeneous Parallel Framework for Domain-Specific Languages                  |       |
 | When and how to develop domain-specific languages                                 |       |
 | Morphing: Safely Shaping a Class in the Image of Others                           |       |
 | Metaprogramming with Traits                                                       |       |
@@ -38,7 +40,7 @@
 
 * Shallow Embedding - Immediately translate to target language (Code string)
 * Deep Embedding - Build data structure of decision tree (JSON string)
-* Explot domain knowledge
+* Exploit domain knowledge
 * Utilize features in target hardware
 * Staging
 
@@ -192,6 +194,52 @@
 * "Modern data analytics need to combine multiple programming models and make e cient use of modern hardware with large memory, many cores, and accelerators such as GPUs"
 * "We believe that multi-stage APIs, in the spirit of DataFrames, and compiler systems like Flare and Delite, will play an increasingly important role in the future to satisfy the increasing demand for  exible and uni ed analytics with high e ciency."
 
+# A Heterogeneous Parallel Framework for Domain-Specific Languages
+
+* Delite compiler framework and runtime
+* Heterogenous parallel architecture programming difficulty =>
+  * Productivity loss, Maintainability, Scalability, Portability
+  * Need higher level abstractions => DSL
+    * Higher level than general programming languages
+    * Enable domain specific optimizations
+    * External (Independent), Internal (Embedded into host language)
+      * Internal are easier, but sacrifice optimizations
+  * Layer 1: LMS - Embed DSL into host language
+    - Overrides expressions
+  * Layer 2&3: Delite
+    * Add domain-specific optimizations
+    * Generate IR, which is consumed by runtime
+    * Extensible compilation framework - don't need to write custom compiler for DSL
+      * Need to implement Delite data/control structures
+      * Need to add domain specific optimization rules
+    * Provides extensible parallel patterns
+    * Generic IR - Symbols and definitions, "Sea of nodes", CSE, transformations
+      * Better optimizations than compiler because of domain knowledge
+      * Assumption: Operations are side-effect free and objects start out as immutable
+    * Parallel IR - Delite *op*, track dependencies among nodes
+      * (Sequential,Reduce,Map,Zip,MultiLoop)
+    * Domain-specific IR - Extend Delite *op*
+    * Heterogenous code generation - Extend *code generators*, can override for library
+      * Execution graph of Delite ops with executable kernels
+      * Compile code in multiple ways (GPU/CPU)
+    * Runtime <- Execution graph, kernels, other code
+      * Clustering algorithm: Schedule each op on the same resource as one of its inputs
+      * CPU: Scala, GPU: Cuda, JNI as bridge
+      * GPU memory management
+* DSL compilers vs DSL libraries
+  * DSL libraries: JNI native binary, hard to get execution graph
+  * DSL compilers: Code generation, easy to get execution graph
+* Metaprogramming:
+  * Techniques: C++ templates, Template Haskell, Expression Templates, TaskGraph
+  * Languages: Telescoping Languages, MetaML, MetaOCaml
+  * Libraries: ATLAS, FFTW, SPIRAL
+* Heterogenous programming: EXOCHI, OpenCL, Merge, Harmony
+* Data-parallel programming:
+  * Copperhead, FlumeJava, Intel's Array Building Blocks, Concurrent Collections (CNC)
+  * DryadLINQ (LINQ = DSL, Dryad = Runtime)
+* Parallel programming languages:
+  * Chapel, Data-Parallel Haskell, Fortress, High Performance Fortran, NESL, X10
+
 # CITATION NEEDED
 
 * Wikipedia (https://en.wikipedia.org/wiki/Domain-specific_language)
@@ -201,3 +249,4 @@
 * JVM does not work well with GPU
 * Rust can be faster than C in some cases (due to ownership)
 * Add info about why project is currently missing an IR
+* 90% of the execution is for 10% of the code
