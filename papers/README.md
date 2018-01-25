@@ -12,6 +12,7 @@
 | Polymorphic embedding of DSLs                                                     |       |
 | Flare: Native Compilation for Heterogeneous Workloads in Apache Spark             |       |
 | A Heterogeneous Parallel Framework for Domain-Specific Languages                  |       |
+| LMS: A Pragmatic Approach to Runtime Code Generation and Compiled DSLs            |       |
 |-----------------------------------------------------------------------------------+-------|
 | Language Virtualization for Heterogeneous Parallel Computing                      |       |
 | Voodoo - A Vector Algebra for Portable Database Performance on Modern Hardware    |       |
@@ -239,6 +240,32 @@
   * DryadLINQ (LINQ = DSL, Dryad = Runtime)
 * Parallel programming languages:
   * Chapel, Data-Parallel Haskell, Fortress, High Performance Fortran, NESL, X10
+
+# LMS: A Pragmatic Approach to Runtime Code Generation and Compiled DSLs
+
+* Generative programming - Program generator
+  * Static - Compile time code generation
+  * Dynamic - Runtime code generation
+  * Multistage programming (MSP, staging) - Delay evaluation, Unpredictable
+  * Quasi-quotation: Unevaluated code
+* LMS
+  1. Double => Rep[Double], Rep == Represents
+  2. Wrap as trait (Expression, Definition, Block)
+  * Embedding
+    * *Tagless* (Compile time method resolution)
+    * *Polymorphic* (Not implementation specific)
+    * Safety - Representation inaccessible to generator
+  * Override expressions, generic and specific optimizations
+  * Separate type checking/compilation, ensure nonambiguity and exhaustiveness
+  * Compile trait, traverse nested blocks and emit definition nodes
+    * Eagerly expand function definitions
+    * => Problem with recursion
+    * Compare by serializing functions, (controlled unfolding), don't re-expand functions
+  * "one cannot achieve clarity, safety, and efficiency at the same time"
+  * Safety => Domain specific optimizations must happen before MSP code gen primitives
+    * Keep internal code structure hidden from client generator code
+* Higher Order AST - HOAS
+
 
 # CITATION NEEDED
 
