@@ -33,6 +33,7 @@
 | Scala Macros: Let Our Powers Combine!                                             |       |
 | Modular Domain Specific Languages and Tools                                       |       |
 | MontiCore: a framework for compositional development of domain specific languages |       |
+| Modular domain specific languages and tools.                                      |       |
 |-----------------------------------------------------------------------------------+-------|
 
 ```
@@ -264,8 +265,11 @@
   * "one cannot achieve clarity, safety, and efficiency at the same time"
   * Safety => Domain specific optimizations must happen before MSP code gen primitives
     * Keep internal code structure hidden from client generator code
-* Higher Order AST - HOAS
+* Higher Order AST (HOAS)
 
+# Language Virtualization for Heterogeneous Parallel Computing
+
+* 
 
 # CITATION NEEDED
 
@@ -277,3 +281,9 @@
 * Rust can be faster than C in some cases (due to ownership)
 * Add info about why project is currently missing an IR
 * 90% of the execution is for 10% of the code
+* OpenCL = Embedded DSL, Cuda ~= External DSL
+
+
+# Useful links
+
+* Flink uses: https://cwiki.apache.org/confluence/display/FLINK/Powered+by+Flink
