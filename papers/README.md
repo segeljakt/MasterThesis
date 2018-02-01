@@ -3,18 +3,21 @@
 |-----------------------------------------------------------------------------------+-------|
 | Title                                                                             | Cited |
 |-----------------------------------------------------------------------------------+-------|
-| Shallow Embedding of DSLs via Online Partial Evaluation                           |       |
-| Apache Flink: Stream and Batch Processing in a Single Engine                      |       |
-| The Rust Programming Language 2                                                   |       |
-| General purpose languages should be metalanguages                                 |       |
-| Scala-virtualized                                                                 |       |
-| Ziria: A DSL for wireless systems programming                                     |       |
-| Polymorphic embedding of DSLs                                                     |       |
-| Flare: Native Compilation for Heterogeneous Workloads in Apache Spark             |       |
-| A Heterogeneous Parallel Framework for Domain-Specific Languages                  |       |
-| LMS: A Pragmatic Approach to Runtime Code Generation and Compiled DSLs            |       |
+| Shallow Embedding of DSLs via Online Partial Evaluation                           | A     |
+| Apache Flink: Stream and Batch Processing in a Single Engine                      | A     |
+| The Rust Programming Language 2                                                   | A     |
+| General purpose languages should be metalanguages                                 | A     |
+| Scala-virtualized                                                                 | A     |
+| Ziria: A DSL for wireless systems programming                                     | A     |
+| Polymorphic embedding of DSLs                                                     | A     |
+| Flare: Native Compilation for Heterogeneous Workloads in Apache Spark             | A     |
+| A Heterogeneous Parallel Framework for Domain-Specific Languages                  | A     |
+| LMS: A Pragmatic Approach to Runtime Code Generation and Compiled DSLs            | A     |
+| Language Virtualization for Heterogeneous Parallel Computing                      | A     |
 |-----------------------------------------------------------------------------------+-------|
-| Language Virtualization for Heterogeneous Parallel Computing                      |       |
+| Active Libraries and Universal Languages                                          |       |
+| Paxos Made Switch-y                                                               |       |
+| Programming Protocol-Independent Packet Processors                                |       |
 | Voodoo - A Vector Algebra for Portable Database Performance on Modern Hardware    |       |
 | Weld: Rethinking the Interface Between Data-Intensive Libraries                   |       |
 | Concealing the deep embedding of DSLs                                             |       |
@@ -199,7 +202,7 @@
 # A Heterogeneous Parallel Framework for Domain-Specific Languages
 
 * Delite compiler framework and runtime
-* Heterogenous parallel architecture programming difficulty =>
+* Heterogeneous parallel architecture programming difficulty =>
   * Productivity loss, Maintainability, Scalability, Portability
   * Need higher level abstractions => DSL
     * Higher level than general programming languages
@@ -269,7 +272,142 @@
 
 # Language Virtualization for Heterogeneous Parallel Computing
 
-* 
+* Heterogenous parallelism => OpenMP, MPI, Cuda, OpenCL
+* => Difficult, requires expertise, is thus sometimes avoided entirely by devs
+* => Language Virtualization
+* Limitations of General Purpose Languages:
+  1. Must produce correct code for all applications => No aggressive optimizations
+  2. Cannot infer about data structures (financial, gaming, image processing)
+* DSLs: TeX/LaTeX, Matlab, SQL, OpenGL, Unix Shell
+  * Can use aggressive optimizations
+  * External: Implemented from scratch with custom compiler
+    1. (-) Enormous effort
+    2. (-) Cannot combine with other DSLs
+  * Embedded: Lives inside host language
+    1. (+) Easier for programmer (Does not need to learn new syntax)
+    2. (+) Can combine with other DSLs
+    3. (-) Cannot exploit domain knowledge => Solve with *language virtualization*
+* Language is *virtualizable* if: e.g., Lisp
+  * Expressiveness: Express DSL in a natural way to domain specialists
+  * Performance: Should use domain knowledge to produce optimal code
+  * Safety: Strict guarantees about generated program's behavior
+  * Effort: Required effort should be close to that of embedded DSL
+* Language virtualization
+  * Similar to hardware virtualization
+  * Consists of: 
+    1. Application of DSLs
+    2. DSLs embedded in Scala with language virtualization
+    3. Scala-based compiler infrastructure, able to perform domain-specific optimizations
+    4. Framework and runtime for DSL parallelization and mapping to heterogenous architectures
+  * Expressiveness => Overload all constructs, e.g., ifThenElse()
+  * Performance => Need AST, staged meta-programming, embedded object is analyzed by meta program
+                   Selectively make constructs 'liftable'
+                => Expression trees
+  * Effort => Lightweight modular staging
+  * Safety => Polymorphic embedding, tagless
+  * Topology must remain constant for the program duration
+  * Liszt: meshes and fields
+    * Automatically perform domain decomposition (Partitioning, decompose mesh into optimal domains)
+    * Automatic determination and maintenance of ghost cells (Minimize communication & sync.)
+    * Selection of mesh representation (Choose optimal mesh data structure)
+    * Optimize layout of field variables (Choose optimal field data structure)
+  * OptiML: Devs can focus on accuracy and correctness, runtime manages performance and scaling
+    * Stage-time optimizations
+      * Transparent compression (Compress OptiML data structures before transfer)
+      * Device locality (Use stage-time information to determine target device for kernel)
+      * Choice of data representation (Sparse vs dense matrix)
+    * Run-time optimizations
+      * Best-effort computing (OptiML programmer tells runtime to trade accuracy for performance)
+      * Relaxed dependencies (Trade accuracy for parallelism)
+  * Delite - Simplify DSL parallelization
+    * Provides set of predefined AST nodes for common parts of DSLs
+    * Can add domain-specific nodes and semantics to the DSL
+    * Provides case classes for parallel execution patterns (Map, Reduce, ZipWith, Scan)
+    * Multiple stages of compilation,
+    * Generates AST with virtualization and performs domain specific optimizations
+    * Expands nodes to handle delite-specific implementation details and generic optimizations
+    * Maps each domain-specific operation to hardware target => Optimized execution graph
+  * Stage-time (Static), Run-time (Dynamic)
+* Program generation
+  * Given the desired parameters as input, outputs the corresponding specialized program
+    * High performance libraries are built this way
+  * Universal languages
+  * MetaOCaml => Delineate staged expressions in a DSL (Separate host from generated program)
+  * Running staged expressions => Assemble them as program source code
+  * C++ Templates => Expansion at compile time
+* Pure Embedding:
+  * (+) Expressiveness, Safety, Effort
+  * (-) Performance (Only partial evaluation)
+
+```scala
+trait TestMatrix { this: MatrixArith =>
+  def example(a: Matrix, b: Matrix,
+              c: Matrix, d: Matrix) = {
+  val x = a*b + a*c
+  val y = a*c + a*d
+  println(x+y)
+}
+
+trait MatrixArith {
+  type Rep[T]
+  type InternalMatrix
+  type Matrix = Rep[InternalMatrix]
+  // allows infix(+,*) notation for Matrix
+  implicit def matArith(x: Matrix) = new {
+    def +(y: Matrix) = add(x,y)
+    def *(y: Matrix) = mul(x,y)
+  }
+  def add(x: Matrix, y: Matrix): Matrix
+  def mul(x: Matrix, y: Matrix): Matrix
+}
+
+trait Expressions {
+  // constants/symbols (atomic)
+  abstract class Exp[T]
+  case class Const[T](x: T) extends Exp[T]
+  case class Sym[T](n: Int) extends Exp[T]
+  // operations (composite, defined in subtraits)
+  abstract class Op[T]
+  // additional members for managing encountered definitions
+  def findOrCreateDefinition[T](op: Op[T]): Sym[T]
+  implicit def toExp[T](d: Op[T]): Exp[T] = findOrCreateDefinition(d)
+  // pattern-match on definitions
+  object Def {
+    def unapply[T](e: Exp[T]): Option[Op[T]] = ...
+  }
+}
+
+trait MatrixArithRepExp extends MatrixArith with Expressions {
+  //selecting expression tree nodes representation
+  type Rep[T] = Exp[T]
+  trait InternalMatrix
+  //tree node classes
+  case class Add(x: Matrix, y: Matrix) extends Op[InternalMatrix]
+  case class Mul(x: Matrix, y: Matrix) extends Op[InternalMatrix]
+  def add(x: Matrix, y: Matrix) = Add(x, y)
+  def mul(x: Matrix, y: Matrix) = Mul(x, y)
+}
+
+trait MatrixArithRepExpOpt extends MatrixArithRepExp {
+  override def add(x: Matrix, y: Matrix) =
+  (x, y) match {
+    // (AB + AD) == A * (B + D)
+    case (Def(Add(a, b)), Def(Mul(c, d))) if (a == c) => Mul(a, Add(b,d))
+    // calls default add() if no match
+    case _ => super.add(x, y)
+  }
+}
+
+object MyMatrixApp extends TestMatrix with MatrixArithRepExpOpt
+```
+
+# DSLs
+  * External => Custom compiler
+  * Internal (Embedded) => Piggyback on language
+    * Shallow embedding => Code
+    * Deep embedding => AST
+    * Pure embedding => Library
+    * Polymorphic embedding => Not library
 
 # CITATION NEEDED
 
@@ -279,10 +417,12 @@
   * domain-specific languages should exhibit minimal redundancy.
 * JVM does not work well with GPU
 * Rust can be faster than C in some cases (due to ownership)
-* Add info about why project is currently missing an IR
 * 90% of the execution is for 10% of the code
 * OpenCL = Embedded DSL, Cuda ~= External DSL
 
+# Random Ideas
+
+* Compiler generates optimal hardware/architecture for generated program
 
 # Useful links
 
