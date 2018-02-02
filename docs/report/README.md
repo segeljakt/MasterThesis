@@ -51,7 +51,7 @@ header-includes:
 * ***Problem statement.***
 * ***References.***
 
-Current distributed systems are not able to support continuous deep analytics (CDA) at a large scale [@SOURCE]. In addition, distributed systems are becoming more heterogenous [@Virtualization]. This requires developers of CDA to have expertise with multiple APIs and programming models which interface with the drivers, e.g., CUDA, OpenCL, OpenMP, MPI. Due to this complexity, many general-purpose distributed systems, e.g., Spark and Flink, are written in high level languages such as Java and Scala. This in turn sacrifices performance for clarity, as running applications on the JVM incurs overhead. Evaluation by [@Flare] has shown that a 128 node native Spark cluster running PageRank can be outperformed by a single laptop.
+Current distributed systems are not able to support continuous deep analytics (CDA) at a large scale [@SOURCE]. In addition, distributed systems are becoming more heterogenous [@Virtualization]. This requires developers of CDA to have expertise with multiple APIs and programming models which interface with the drivers, e.g., CUDA, OpenCL, OpenMP, MPI. In addition, the manufacturers update these drivers regularlyDue to this complexity, many general-purpose distributed systems, e.g., Spark and Flink, are written in high level languages such as Java and Scala. This in turn sacrifices performance for clarity, as running applications on the JVM incurs overhead. Evaluation by [@Flare] has shown that a 128 node native Spark cluster running PageRank can be outperformed by a single laptop.
 
 A possible approach to mitigate the performance loss is to use a Domain Specific Language (DSL) [@Delite]. DSLs are minimalistic languages, tailor-suited to a certain domain. They bring domain-specific optimizations which general-purpose languages such as Java are unable to provide. DSLs can optimize further by generating code in a low level language, and compiling it to binary code which naturally runs faster than byte code. C and C++ are commonly used as the target low-level language. We regard Rust as a candidate as it provides safe and efficient memory management through ownership.
 
@@ -88,8 +88,9 @@ In terms of ethics, it is crucial that the code generator does not generate bugg
 
 * ***What are the existing solutions?***
 
-Our approach to optimizing Flink draws inspiration from Flare which is a back-end to Spark [@Flare]. Flare bypasses Spark's inefficient abstraction layers by 1. Compiling queries to native code, 2. Replacing parts of the Spark runtime, and by 3. Extending the scope of optimizations and code generation to UDFs. Flare is built on top of Delite, a compiler framework for high performance DSLs, and LMS, a generative programming technique.
+Our approach to optimizing Flink draws inspiration from Flare which is a back-end to Spark [@Flare]. Flare bypasses Spark's inefficient abstraction layers by 1. Compiling queries to native code, 2. Replacing parts of the Spark runtime, and by 3. Extending the scope of optimizations and code generation to UDFs. Flare is built on top of Delite, a compiler framework for high performance DSLs, and LMS, a generative programming technique. When applying Flare, Spark's query performance improves significantly and becomes equivalent to HyPer, which is one of the fastest SQL engines. 
 
+Weld is a framework
 
 
 ## Delimitations

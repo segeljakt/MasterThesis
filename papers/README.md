@@ -1,43 +1,41 @@
 ```
 
-|-----------------------------------------------------------------------------------+-------|
-| Title                                                                             | Cited |
-|-----------------------------------------------------------------------------------+-------|
-| Shallow Embedding of DSLs via Online Partial Evaluation                           | A     |
-| Apache Flink: Stream and Batch Processing in a Single Engine                      | A     |
-| The Rust Programming Language 2                                                   | A     |
-| General purpose languages should be metalanguages                                 | A     |
-| Scala-virtualized                                                                 | A     |
-| Ziria: A DSL for wireless systems programming                                     | A     |
-| Polymorphic embedding of DSLs                                                     | A     |
-| Flare: Native Compilation for Heterogeneous Workloads in Apache Spark             | A     |
-| A Heterogeneous Parallel Framework for Domain-Specific Languages                  | A     |
-| LMS: A Pragmatic Approach to Runtime Code Generation and Compiled DSLs            | A     |
-| Language Virtualization for Heterogeneous Parallel Computing                      | A     |
-|-----------------------------------------------------------------------------------+-------|
-| Active Libraries and Universal Languages                                          |       |
-| Paxos Made Switch-y                                                               |       |
-| Programming Protocol-Independent Packet Processors                                |       |
-| Voodoo - A Vector Algebra for Portable Database Performance on Modern Hardware    |       |
-| Weld: Rethinking the Interface Between Data-Intensive Libraries                   |       |
-| Concealing the deep embedding of DSLs                                             |       |
-| A Fast Abstract Syntax Tree Interpreter for R                                     |       |
-| Code Generation with Templates                                                    |       |
-| A Python Wrapper Code Generator for Dynamic Libraries                             |       |
-| The Scala Programming Language                                                    |       |
-| Data stream processing via code annotations                                       |       |
-| A refined decompiler to generate C code with high readability                     |       |
-| Deeply Reifying Running Code for Constructing a Domain-Specific Language          |       |
-| Multi-Target C Code Generation from MATLAB                                        |       |
-| When and how to develop domain-specific languages                                 |       |
-| Morphing: Safely Shaping a Class in the Image of Others                           |       |
-| Metaprogramming with Traits                                                       |       |
-| JavaGI: Generalized Interfaces for Java                                           |       |
-| Scala Macros: Let Our Powers Combine!                                             |       |
-| Modular Domain Specific Languages and Tools                                       |       |
-| MontiCore: a framework for compositional development of domain specific languages |       |
-| Modular domain specific languages and tools.                                      |       |
-|-----------------------------------------------------------------------------------+-------|
+| ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FINISHED ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ |
+| Shallow Embedding of DSLs via Online Partial Evaluation                              |
+| Apache Flink: Stream and Batch Processing in a Single Engine                         |
+| The Rust Programming Language 2                                                      |
+| General purpose languages should be metalanguages                                    |
+| Scala-virtualized                                                                    |
+| Ziria: A DSL for wireless systems programming                                        |
+| Polymorphic embedding of DSLs                                                        |
+| Flare: Native Compilation for Heterogeneous Workloads in Apache Spark                |
+| A Heterogeneous Parallel Framework for Domain-Specific Languages                     |
+| LMS: A Pragmatic Approach to Runtime Code Generation and Compiled DSLs               |
+| Language Virtualization for Heterogeneous Parallel Computing                         |
+| Paxos Made Switch-y                                                                  |
+| ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PENDING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ |
+| Combining Deep and Shallow Embedding for EDSL                                        |
+| Active Libraries and Universal Languages                                             |
+| Programming Protocol-Independent Packet Processors                                   |
+| Voodoo - A Vector Algebra for Portable Database Performance on Modern Hardware       |
+| Weld: Rethinking the Interface Between Data-Intensive Libraries                      |
+| Concealing the deep embedding of DSLs                                                |
+| A Fast Abstract Syntax Tree Interpreter for R                                        |
+| Code Generation with Templates                                                       |
+| A Python Wrapper Code Generator for Dynamic Libraries                                |
+| The Scala Programming Language                                                       |
+| Data stream processing via code annotations                                          |
+| A refined decompiler to generate C code with high readability                        |
+| Deeply Reifying Running Code for Constructing a Domain-Specific Language             |
+| Multi-Target C Code Generation from MATLAB                                           |
+| When and how to develop domain-specific languages                                    |
+| Morphing: Safely Shaping a Class in the Image of Others                              |
+| Metaprogramming with Traits                                                          |
+| JavaGI: Generalized Interfaces for Java                                              |
+| Scala Macros: Let Our Powers Combine!                                                |
+| Modular Domain Specific Languages and Tools                                          |
+| MontiCore: a framework for compositional development of domain specific languages    |
+| Modular domain specific languages and tools.                                         |
 
 ```
 
@@ -101,7 +99,6 @@
 
 # Polymorphic Embedding of DSLs
 
-* Seems to interpret DSLs into the Scala language, which might not be wanted
 * Polymorphic Embedding:
   * Language Interfaces, Virtual types
   * Semantics (Subclass of Language Interface), maps Virtual Type to Domain
