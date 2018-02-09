@@ -1,0 +1,6 @@
+[package]
+name = "rust-tutorial"
+version = "0.1.0"
+authors = ["Klas <klasseg@kth.se>"]
+
+[dependencies]

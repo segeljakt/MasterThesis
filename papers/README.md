@@ -13,17 +13,23 @@
 | LMS: A Pragmatic Approach to Runtime Code Generation and Compiled DSLs               |
 | Language Virtualization for Heterogeneous Parallel Computing                         |
 | Paxos Made Switch-y                                                                  |
+| Voodoo - A Vector Algebra for Portable Database Performance on Modern Hardware       |
+| Suitability of NoSQL systems—Cassandra and ScyllaDB—for IoT workloads                |
+| The Scala Programming Language                                                       |
+| Weld: Rethinking the Interface Between Data-Intensive Libraries                      |
+| Scala Macros: Let Our Powers Combine!                                                |
+| System Programming in Rust: Beyond Safety                                            |
 | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PENDING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ |
+| SugarJ: library-based syntactic language extensibility                               |
+| Transparent deep embedding of DSLs                                                   |
+| Compiling Collection-oriented Languages onto Massively Parallel Computers            |
 | Combining Deep and Shallow Embedding for EDSL                                        |
 | Active Libraries and Universal Languages                                             |
 | Programming Protocol-Independent Packet Processors                                   |
-| Voodoo - A Vector Algebra for Portable Database Performance on Modern Hardware       |
-| Weld: Rethinking the Interface Between Data-Intensive Libraries                      |
 | Concealing the deep embedding of DSLs                                                |
 | A Fast Abstract Syntax Tree Interpreter for R                                        |
 | Code Generation with Templates                                                       |
 | A Python Wrapper Code Generator for Dynamic Libraries                                |
-| The Scala Programming Language                                                       |
 | Data stream processing via code annotations                                          |
 | A refined decompiler to generate C code with high readability                        |
 | Deeply Reifying Running Code for Constructing a Domain-Specific Language             |
@@ -32,10 +38,8 @@
 | Morphing: Safely Shaping a Class in the Image of Others                              |
 | Metaprogramming with Traits                                                          |
 | JavaGI: Generalized Interfaces for Java                                              |
-| Scala Macros: Let Our Powers Combine!                                                |
 | Modular Domain Specific Languages and Tools                                          |
 | MontiCore: a framework for compositional development of domain specific languages    |
-| Modular domain specific languages and tools.                                         |
 
 ```
 
@@ -244,6 +248,9 @@
 
 # LMS: A Pragmatic Approach to Runtime Code Generation and Compiled DSLs
 
+* Requires Scala Virtualized !!
+  * => https://pdfs.semanticscholar.org/e95b/9e1233b9090aaf319d5f4f78756ec7b9b7c5.pdf
+  * http://web.stanford.edu/class/cs442/lectures_unrestricted/cs442-lms.pdf
 * Generative programming - Program generator
   * Static - Compile time code generation
   * Dynamic - Runtime code generation
@@ -398,13 +405,89 @@ trait MatrixArithRepExpOpt extends MatrixArithRepExp {
 object MyMatrixApp extends TestMatrix with MatrixArithRepExpOpt
 ```
 
+
+# https://www.youtube.com/watch?v=16A1yemmx-w
+* JVM => 10x - 1000x slowdown
+* 100x faster if:
+  * Don't ever use for loop
+  * Don't ever use scala.collection.mutable
+  * Don't ever use scala.collection.immutable
+  * Always use Private[This]
+  * Avoid closures
+* 0 until x => allocates range (method call)
+* Trend: We are moving away from the hardware
+* GPU, Vector units, optimizing is huge effort
+* DSL, different level of abstraction levels, different optimizations for each level
+  * Front end: Matrix, Graph
+  * Mid end: Array, Struct, Loop
+  * Back end: SIMD, GPU, cluster
+* Need extensibility and generic optimizations, (CSE, DCE)
+* => LMS
+  * Staging = Multi-Stage Programming, separate computations into stages
+    1. "delay" expressions to a generated stage (do not run right now)
+    2. "run" delayed expressions
+    3. Staged program fragments as first class values
+    * Think of it as generative metaprogramming
+    * Program generically, run specialized
+  * Core abstractions:
+    * Int, String, T => Execute now!
+    * Rep[Int], Rep[String], Rep[T] => Execute later
+    * if (c) a else b -> ifThenElse(c,a,b) => Language virtualization
+    * Extensible IR, transformers, loop fusion
+    * reflect => Turn def into rep, Pure/Effect
+* LMS IS A ***RUNTIME*** CODE GENERATION APPROACH
+
+Lightweight Modular Staging (LMS) is a runtime code generation approach in Scala rooted in the idea of multistage programming. It uses domain knowledge to optimize the generated code. It is able to specialize the program after its input. The motivation behind LMS is that the JVM's bytecode runs 10 to 1000 times slower than low-level optimized code. Bytecode can be made to run 100 times faster by adopting the following rules: 1. Never use for-loops, 2. Never use `scala.collection.mutable` nor `scala.collection.immutable`, 3. Always use Private[This], and 4. Avoid closures, as they have the overhead of a method call.
+
+LMS provides one core abstraction `Rep`, which can be used as `Rep[T]` to delay computation of an expression `T`. This causes it to not get evaluated at staging time. Staging time is the time before code generation. In consequence, code will be generated for `T`.
+
+Meanwhile, a bare `T` indicates that `T` should not be delayed. By evaluating it at staging time, it becomes constant in the generated code and can be optimized away.
+
+By dividing the execution into two stages, the abstractions of the first stage are abolished in the second stage. This will boost the performance of the application.
+
+A usage example of LMS is for loop unrolling, see [@LISTING].
+
+For example, `Rep[Range]` over a for-loop indicates that the loop should be unrolled. Compilers already provide this optimization at compile-time. The difference is that `Rep[Range]` unrolls at runtime, thus it can depend on dynamic input. The following code unrolls a loop if `n` is less than a `threshold`.
+
+```.scala
+if (n < threshold) {
+  for (j <- (0 until n): Range) { // Unroll
+    // Code
+  }
+} else {
+  for (j <- (0 until n): Rep[Range]) { // Do not unroll
+    // Code
+  }
+}
+```
+
+The reason for having a threshold is to limit the amount of code that can be generated. Generating too much code can speed down execution. Moreover, only when `n` is small does the overhead of allocating `Range` have an impact on the execution performance.
+
+
+
+If the input is small, it is good to unroll the loop Normally, without the `Rep` abstraction, `T` would be executed as-is.
+
+![@Yammer Moving from Scala to Java]
+
+The 
+
+
+
+
+
+
+
+
+
 # DSLs
-  * External => Custom compiler
-  * Internal (Embedded) => Piggyback on language
-    * Shallow embedding => Code
-    * Deep embedding => AST
-    * Pure embedding => Library
-    * Polymorphic embedding => Not library
+* External => Custom compiler
+* Internal (Embedded) => Piggyback on language
+  * Shallow embedding => Code
+  * Deep embedding => AST
+  * Pure embedding => Library
+  * Polymorphic embedding => Not library
+* Any problem in computer science can be solved by another level of indirection
+* Except problems caused by too many levels of indirection (Performance)
 
 # CITATION NEEDED
 
@@ -420,7 +503,18 @@ object MyMatrixApp extends TestMatrix with MatrixArithRepExpOpt
 # Random Ideas
 
 * Compiler generates optimal hardware/architecture for generated program
+* Work stealing
+* Implicit classes/def
 
 # Useful links
 
 * Flink uses: https://cwiki.apache.org/confluence/display/FLINK/Powered+by+Flink
+
+
+first-class citizen
+
+Rust
+* (+) Fast, ecosystem
+* (-) Boilerplate, compile time
+
+More approaches: external interpreter, pure/shallow/polymorphic/tagless embedding, dynamic/static generator, lightweight modular staging, Scala virtualized, ….

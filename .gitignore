@@ -3,6 +3,6 @@
 *.DS_Store
 docs/opposition/Thesis*
 papers/downloaded/
-kompics-rust/
 target/
-
+sourcecode/
+clones/
