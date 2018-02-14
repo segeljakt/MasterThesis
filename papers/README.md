@@ -505,6 +505,9 @@ The
 * Compiler generates optimal hardware/architecture for generated program
 * Work stealing
 * Implicit classes/def
+* Conditionally generate fields (Do not generate struct fields if they are not used)
+* C ABI
+* def printAll(i: ReturnExp, strings: Exp*)
 
 # Useful links
 
