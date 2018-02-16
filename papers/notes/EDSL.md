@@ -55,35 +55,40 @@ EXPRESSION PROBLEM
 Rust:
 
 ```rust
+
   trait Exp {
     fn eval() -> i32;
-    fn to_string() -> String;
+    fn emit() -> String;
   }
 
-  struct Const {
+  /* -------------------- Literal -------------------- */
+
+  struct Literal {
     val: i32,
   }
+
+  impl Exp for Literal {
+    fn eval(&self) -> i32 {
+      self.val
+    }
+    fn emit(&self) -> String {
+      self.val.to_string()
+    }
+  }
+
+  /* ---------------------- Add ---------------------- */
 
   struct Add<T: Exp> {
     lhs: T,
     rhs: T,
   }
 
-  impl Exp for Const {
-    fn eval(&self) -> i32 {
-      self.val
-    }
-    fn to_string(&self) -> String {
-      self.val.to_string()
-    }
-  }
-
   impl<T: Exp> Exp for Add<T> {
     fn eval(&self) -> i32 {
       self.lhs.eval() + self.rhs.eval()
     }
-    fn to_string(&self) -> String {
-      format!("{} + {}", self.rhs.to_string(), self.rhs.to_string())
+    fn emit(&self) -> String {
+      format!("{} + {}", self.lhs.emit(), self.rhs.emit())
     }
   }
 ```
@@ -98,7 +103,6 @@ Haskell:
   module Expressions where
 
   data Expression = Const Int | Add Exp Exp
-
 
   eval :: Exp -> Int
   eval (Const c) = c
