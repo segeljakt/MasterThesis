@@ -1,0 +1,32 @@
+
+
+
+newtype Eval = Eval { eval :: Int }
+newtype View = View { view :: String }
+
+class ExpAlg t where
+    lit :: Int -> t
+    add :: t -> t -> t
+class MulAlg t where
+    mul :: t -> t -> t
+
+instance ExpAlg Eval where
+    lit n   = Eval n
+    add x y = Eval $ eval x + eval y
+instance MulAlg Eval where
+    mul x y = Eval $ eval x * eval y
+
+instance ExpAlg View where
+    lit n   = View $ show n
+    add x y = View $ "(" ++ view x ++ " + " ++ view y ++ ")"
+instance MulAlg View where
+    mul x y = View $ "(" ++ view x ++ " * " ++ view y ++ ")"
+
+
+e1 = add (lit 1)
+         (add (lit 2)
+              (lit 3))
+e2 = mul (lit 4)
+         (add (lit 5)
+              (lit 6))
+v1 = eval (e1 :: Eval)
