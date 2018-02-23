@@ -262,7 +262,7 @@
   * Embedding
     * *Tagless* (Compile time method resolution)
     * *Polymorphic* (Not implementation specific)
-    * Safety - Representation inaccessible to generator
+    * *Safety* - Representation inaccessible to generator
   * Override expressions, generic and specific optimizations
   * Separate type checking/compilation, ensure nonambiguity and exhaustiveness
   * Compile trait, traverse nested blocks and emit definition nodes

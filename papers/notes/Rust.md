@@ -4,7 +4,7 @@ For many years, C has been used as the main-goto low-level system development la
 
 Rust is a relatively new low-level programming language. It achieves both performance and safety through an ownership memory management model. In addition, Rust provides many zero-cost abstractions, e.g., pattern matching, generics, traits, and type inference, which brings its utility closer to that of high level languages. Since its original release, Rust has seen multiple major revisions. Originally, it had a class system and a garbage collection memory model.
 
-In Rust, when a variable is bound to an object, it takes ownership of that object. Ownership can be transferred to a new variable, which in breaks the original binding. Naturally, an object cannot be aliased unless it has a reference counter. Objects are dropped, i.e., de-allocated, when their owner variable goes out of scope. A variable can temporarily borrow ownership of an object without breaking the binding.
+In Rust, when a variable is bound to an object, it takes ownership of that object. Ownership can be transferred to a new variable, which in consequence breaks the original binding. Naturally, an object cannot be aliased unless it has a reference counter. Objects are dropped, i.e., de-allocated, when their owner variable goes out of scope. A variable can temporarily borrow ownership of an object without breaking the binding.
 
 Upfront, ownership might appear to be more of a restriction than a benefit compared to other memory models. Other languages might be better for prototyping. Albeit the restrictiveness, ownership can solve complex security concerns such as Software Fault Isolation (SFI) and Static Information Control (IFC).
 
