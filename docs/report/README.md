@@ -40,6 +40,12 @@ header-includes:
 
 * ***General introduction to the area.***
 
+* => What is CDA?
+
+Deep Analytics in the field of data mining is the application of data intensive processing techniques [@http://searchbusinessanalytics.techtarget.com/definition/deep-analytics]. Data can come from multiple sources in a structured, semi-structured or unstructured format. Continuous Deep Analytics (CDA) is a new breed of Deep Analytics where data is both massive, unbound, and live. Data needs to be processed in tight time windows to support real-time decision making. It will enable new time-sensitive applications such as zero-time defense for cyber-attacks and high-precision automated driving.
+
+The CDA project is a five-year project by RISE SICS and KTH. 
+
 <!--## Background-->
 
 <!--* Brief background-->
@@ -51,13 +57,33 @@ header-includes:
 * ***Problem statement.***
 * ***References.***
 
-Current distributed systems are not able to support continuous deep analytics (CDA) at a large scale [@SOURCE]. In addition, distributed systems are becoming more heterogenous [@Virtualization]. This requires developers of CDA to have expertise with multiple APIs and programming models which interface with the drivers, e.g., CUDA, OpenCL, OpenMP, MPI. Developers must also stay up to date with the regularlyDue to this complexity, many general-purpose distributed systems, e.g., Spark and Flink, are written in high level languages such as Java and Scala. This in turn sacrifices performance for clarity, as running applications on the JVM incurs overhead. Evaluation by [@Flare] has shown that a 128 node native Spark cluster running PageRank can be outperformed by a single laptop.
+* What is needed
 
-A possible approach to mitigate the performance loss is to use a Domain Specific Language (DSL) [@Delite]. DSLs are minimalistic languages, tailor-suited to a certain domain. They bring domain-specific optimizations which general-purpose languages such as Java are unable to provide. DSLs can optimize further by generating code in a low level language, and compiling it to binary code which naturally runs faster than byte code. C and C++ are commonly used as the target low-level language. We regard Rust as a candidate as it provides safe and efficient memory management through ownership.
+CDA will need to run large scale matrix and tensor computations which are prevalent in machine learning and graph analytics. For this to work, the system needs be able to exploit the available hardware resources.
+
+* Problem
+
+Hardware acceleration is not easy. Developers need to have expertise with multiple APIs and programming models which interface with the drivers, e.g., CUDA, OpenCL, OpenMP and MPI [@Virtualization]. Moreover, machines in distributed systems can have various configurations. For example, when scaling out, one may choose to add new machines with better hardware. This becomes an issue as code which is optimized for on one architecture might not be portable to other architectures.
+
+* Current solutions, and issues
+
+In consequence, distributed systems make use hardware virtualization to abstract the physical hardware details from the user [@Virtualization]. Spark and Flink employ hardware virtualization through the Java Virtual Machine (JVM) [@Spark @Flink]. While the JVM is highly optimized, it is not well suited for interacting with the GPU [@SOURCE]. It also has a big runtime overhead, partially from garbage collection. Evaluation by [@Flare] has shown that a laptop running handwritten C code can outperform a 128 core native Spark cluster in PageRank. The evaluation measured 20 PageRank iterations for medium sized graphs of ~105M nodes and ~3.5B edges [http://law.di.unimi.it/webdata/uk-2007-05/].
+
+* Possible solution
+
+An approach to obtaining portability and performance at the same time is code generation. Instead of needing to write different code for different architectures, one can write code which generates code for different architectures. At the front-end, the user would use a high-level declarative language to describe the desired behavior of the program. Then, the code generator would generate an equivalent program in a low-level language tailor suited to a certain hardware configuration.
+
+* Challenges
+
+A possible approach to mitigate the performance loss, while still maintaining portability is to use a domain specific language Domain Specific Language (DSL) [@Delite]. DSLs are minimalistic languages, tailor-suited to a certain domain. They bring domain-specific optimizations which general-purpose languages such as Java are unable to provide. DSLs can optimize further by generating code in a low level language, and compiling it to binary code which naturally runs faster than byte code. C and C++ are commonly used as the target low-level language. We regard Rust as a candidate as it provides safe and efficient memory management through ownership.
 
 For a given query, the DSL must both optimize each stage of the query and the query plan as a whole. Another issue is User Defined Functions (UDFs). UDFs are essentially black boxes whose functionality might not be known at compile time. The task of optimizing these is a monumental challenge, and will be left out for future work. Another topic of interest is whether code also could be generated for the network layer. Most modern day switches are programmable, and could allow for further optimizations [@SOURCE].
 
 Previous work by [@SOURCE] has shown that Spark's performance can be improved to be much faster through the use of DSLs. There is no equivalent solution yet for Flink, and this thesis aims to address this. The problem can be summarized as the following problem statement: How can Apache Flink's performance be improved through a Rust DSL?
+
+The program generator is written in a meta-language, and generates hardware-sensitive code for a target-language.
+
+The code generator is written programmed with a DSL. DSLs are minimalistic languages, tailor-suited to a certain problem domain.
 
 ## Purpose
 
@@ -152,6 +178,16 @@ Blah blah blah...
 Blah blah blah...
 
 
+
+
+<!--[@Shallow @Flink @Rust @Scala-virtualized @Ziria @Polymorphic @Flare @Delite @LMS @Virtualization]-->
+<!--@Folding-->
+<!--@EDSL-->
+<!--@ExpressionProblem-->
+<!--@Weld-->
+<!--@Scala-->
+<!--@Voodoo-->
+@ScyllaDB
 
 \End{multicols*}
 
