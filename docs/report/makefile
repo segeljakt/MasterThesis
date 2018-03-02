@@ -14,9 +14,9 @@ DST_FMT=pdf
 #------------------------------------------------------------------------------
 SRC_PATH=$(DOC).$(SRC_FMT)
 DST_PATH=$(DOC).$(DST_FMT)
-STL_PATH=/Users/Klas/Git/writing/styles/harvard-cite-them-right.csl
+STL_PATH=/Users/Klas/Git/writing/styles/ieee-with-url.csl
 BIB_PATH=~/.vim/bibtex/library.bib
-TEM_PATH=/Users/Klas/Git/writing/markdown-template.latex
+TEM_PATH=/Users/Klas/Git/writing/markdown.latex
 # Flags
 DOC_FLAGS += --bibliography $(BIB_PATH)
 DOC_FLAGS += --csl=$(STL_PATH)
