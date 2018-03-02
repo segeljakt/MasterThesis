@@ -508,6 +508,12 @@ The
 * Conditionally generate fields (Do not generate struct fields if they are not used)
 * C ABI
 * def printAll(i: ReturnExp, strings: Exp*)
+* Phantom types
+* union union { union: CryZe } - Today at 11:11 PM
+  "well if you can compile java to wasm, then back shouldn't be a problem
+  you can java -> wasm -> cretonne -> x86 -> link that together with rust
+  wasm to mir may be possible too maybe"
+* http://teavm.org
 
 # Useful links
 
@@ -521,3 +527,4 @@ Rust
 * (-) Boilerplate, compile time
 
 More approaches: external interpreter, pure/shallow/polymorphic/tagless embedding, dynamic/static generator, lightweight modular staging, Scala virtualized, ….
+
