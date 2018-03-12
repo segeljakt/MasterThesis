@@ -71,7 +71,7 @@ header-includes:
 <!--* Brief background-->
 <!--* References-->
 
-## Problem
+# # Problem
 
 <!--Problem definition.-->
 <!--Problem statement.-->
@@ -99,18 +99,18 @@ The program generator is written in a meta-language, and generates hardware-sens
 
 The code generator is written programmed with a DSL. DSLs are minimalistic languages, tailor-suited to a certain problem domain.
 
-## Purpose
+# # Purpose
 
 <!--Motivation behind writing this report.--> The purpose of this thesis is to provide a useful resource for developers of distributed systems. It is specifically aimed at those who seek to boost the performance of distributed systems which are built on top of the JVM.
 
-## Goal/Contributions
+# # Goal/Contributions
 
 <!--Concrete deliverables.--> The goal of this thesis is to explore the area of DSLs with respect to Rust and Scala. The following deliverables are expected:
 
 * A Rust DSL written in Scala.
 * An evaluation of Apache Flink's performance before and after integrating the Rust DSL.
 
-## Benefits, Ethics and Sustainability
+# # Benefits, Ethics and Sustainability
 
 <!--References.-->
 
@@ -120,27 +120,29 @@ Low level code is able to utilize hardware more efficiently than high-level code
 
 In terms of ethics, it is crucial that the code generator does not generate buggy code which could compromise security. Keeping the code generation logic decoupled from the client code is also important. Without this consideration, an attacker would be able to generate malicious code to stage an attack with ease.
 
-## Related Work
+# # Related Work
 
 <!--What are the existing solutions?-->
 
-### Flare
+# ## Flare
 
-Our approach to optimizing Flink draws inspiration from Flare which is a back-end to Spark [@Flare]. Flare bypasses Spark's inefficient abstraction layers by compiling queries to native code, replacing parts of the Spark runtime, and by extending the scope of optimizations and code generation to UDFs. Flare is built on top of Delite which is a compiler framework for high performance DSLs, and LMS, a generative programming technique. When applying Flare, Spark's query performance improves significantly and becomes equivalent to HyPer, which is one of the fastest SQL engines. 
+<!--What is the most relevant piece related work?--> Our approach to code generation draws inspiration from Flare which is a back-end to Spark [@Flare]. Flare bypasses Spark's inefficient abstraction layers by compiling queries to native code, replacing parts of the Spark runtime, and by extending the scope of optimizations and code generation to UDFs. Flare is built on top of Delite which is a compiler framework for high performance DSLs, and LMS, a generative programming technique. When applying Flare, Spark's query performance improves significantly and becomes equivalent to HyPer, which is one of the fastest SQL engines. 
 
-### Weld
+# ## Weld
 
-<!--Libraries--><!-->Weld is an interface between different data-intensive libraries.--> A common optimization in distributed processing is lazy evaluation. With lazy evaluation, data in a distributed computation is materialized only when the computation is finished. This speeds up performance by reducing the data movement overhead. Being able to re-use code is a central part of software development. As an example, libraries such as NumPy and Tensorflow are being used together in data intensive analytic applications. <!--Problem with libraries-->Libraries like these are naturally modular: they take input from main memory, process it, and write it back. As a side effect, successive calls to functions of different libraries might require materialization of intermediate results, and hinder lazy evaluation.
+<!--Problem with libraries--> Libraries are naturally modular: they take input from main memory, process it, and write it back [@Weld]. As a side effect, successive calls to functions of different libraries might require materialization of intermediate results, and hinder lazy evaluation. Lazy evaluation is a common optimization in distributed processing. With lazy evaluation, data in a distributed computation is materialized only when the computation is finished. This speeds up performance by reducing the data movement overhead.
 
-<!--How Weld solves it-->Weld aims to solve this problem by providing a common interface between libraries. The libraries submit their computations in IR code to a lazily-evaluated runtime API. The runtime dynamically compiles IR code fragments and applies various optimizations such as loop tiling, loop fusion, vectorization and common subexpression elimination. The IR is minimalistic with only two abstractions: builders and loops. Builders are able to construct and materialize data, without knowledge of the underlying hardware. Loops consume a set of builders, apply an operation, and produce a new set of builders. By optimizing data movement, Weld is able to speedup programs using Spark SQL, NumPy, Pandas and Tensorflow by at least 2.5x.
+<!--How Weld solves it-->Weld solves the aforementioned problem by providing a common interface between libraries. Libraries submit their computations in IR code to a lazily-evaluated runtime API. The runtime dynamically compiles the IR code fragments and applies various optimizations such as loop tiling, loop fusion, vectorization and common sub-expression elimination. The IR is minimalistic with only two abstractions: builders and loops. Builders are able to construct and materialize data, without knowledge of the underlying hardware. Loops consume a set of builders, apply an operation, and produce a new set of builders. By optimizing the data movement, Weld is able to speedup programs using Spark SQL, NumPy, Pandas and Tensorflow by at least 2.5x.
 
-### ScyllaDB
+# ## ScyllaDB
 
-NoSQL is a new breed of high performance data management systems. They store data in more flexible formats than the regular tabular format found in SQL systems. As a result, they are both able to store more data, and are able to read and write it faster. One of the leading NoSQL data stores is Cassandra, developed by Facebook. Cassandra is written in Java and provides a highly customizable and decentralized architecture. Following Cassandra's success came ScyllaDB. ScyllaDB is an open-source re-write of Cassandra into C++ code with focus on utilization of multi-core architectures, and abolishing the JVM overhead. Most of Cassandra's logic is retained in ScyllaDB. One notable difference is their caching mechanisms. Caching reduces the disk seeks on read operations. This helps decrease the I/O usage which can be a major bottleneck in distributed storage systems. Unlike Cassandra's cache, ScyllaDB's cache is dynamic. ScyllaDB will allocate all available memory to its cache and dynamically evict entries if memory is required for other tasks. This would be less feasible in Cassandra where memory is managed by the garbage collector. In evaluation, ScyllaDB's caching strategy improved the reading performance by less cache misses, but also had a negative impact on write performance.
+NoSQL is a new series of high performance data management systems for Big Data applications. The consistency properties of relational SQL systems limit their scalability options. In contrast, NoSQL systems are more scalable since they store data in flexible and replicable formats such as key-value pairs. One of the leading NoSQL data stores is Cassandra which was originally developed by Facebook. Cassandra is written in Java and provides a highly customizable and decentralized architecture. ScyllaDB is an open-source re-write of Cassandra into C++ code with focus on utilization of multi-core architectures, and removing the JVM overhead.
 
-### Voodoo
+Most of Cassandra's logic stays the same in ScyllaDB. One notable difference is their caching mechanisms. Caching reduces the disk seeks on read operations. This helps decrease the I/O usage which can be a major bottleneck in distributed storage systems. Cassandra's cache is static cache while ScyllaDB's cache is dynamic. ScyllaDB will allocate all available memory to its cache and dynamically evict entries if memory is needed for other tasks. Cassandra does not have this control since memory is managed by the garbage collector. In evaluation, ScyllaDB's caching strategy improved the reading performance by less cache misses, but also had a negative impact on write performance.
 
-Voodoo is a declarative intermediate algebra which abstracts away details of the underlying hardware. It is able to express advanced programming techniques such as cache conscious processing in few lines of code. The output is highly optimized OpenCL code. It could be classified as an external DSL, as it has its own compiler. It has been applied as a backend to MonetDB, which is a high-performance query processing engine, with good results.
+# ## Voodoo
+
+Voodoo is a declarative intermediate algebra which abstracts away details of the underlying hardware. It is able to express advanced programming techniques such as cache conscious processing in few lines of code. The output is highly optimized OpenCL code. It has been applied as a backend to MonetDB, which is a high-performance query processing engine.
 
 Code generation is complex. Different hardware architectures have different ways of achieving performance. Moreover, the performance of a program depends on the input data, e.g., for making accurate branch predictions. As a result, code generators need to encode knowledge both about hardware and data to achieve good performance. In reality, most code generators are designed to generate code solely for a specific target hardware. Voodoo solves this through providing an IR which is portable to many different hardware targets. It is expressive in that it can be tuned to capture hardware-specific optimizations of the target architecture, e.g., data structure layouts and parallelism strategies. Some additional defining characteristics of the Voodoo language are that it is vector oriented, declarative, minimal, deterministic and explicit. Vector oriented implicates that data is stored in the form of vectors, which conform to common parallelism patterns. By being declarative, Voodoo describes the dataflow, rather than its complex underlying logic. It is minimal in that it consists of non-redundant stateless operators. It is deterministic, i.e., it has no control-flow statements, since this is expensive when running SIMD unit parallelism. By being explicit, the behavior of a Voodoo program for a given architecture becomes transparent to the front end developer.
 
@@ -148,20 +150,14 @@ Voodoo is able to obtain high parallel performance on multiple platforms through
 
 When generating code, Voodoo assigns an Extent and Intent value to each code fragment. Extent is the degree of parallelism while Intent is the number of sequential iterations per parallel work-unit. These factors are derived from the control vectors and optimize the performance of the generated program.
 
-## Delimitations
+# # Delimitations
 
 * ***What was intentionally left out?***
 * ***References.***
 
-Only Rust will be used as the target language for code generation. It would be interesting to compare its performance to C and C++, but this is out of scope for this thesis. Another delimitation is regarding the problem of optimizing UDFs. Existing solutions to this problem will be described in the background. The task of inventing a new solution, specialized for Flink, will be left for future studies.
+Only Rust will be used as the target language for code generation. It would be interesting to compare its performance to C and C++, but this is out of scope for this thesis. Moreover, the code generator will not support all of Rust's features. Semantic checking for ownership will be left out since Rust's ownership policy will be changed in the near future to use non-lexical lifetimes.
 
-<!--Methodology/Methods-->
-
-<!--Research methodology.-->
-
-<!--Outline-->
-
-## Conventions used in this paper
+# # Conventions used in this paper
 
 *Italic*
 
@@ -181,43 +177,43 @@ Only Rust will be used as the target language for code generation. It would be i
 
 The following sections describe the Rust programming language, Domain Specific Languages and the Scala language.
 
-## The Rust Programming Language
+# # The Rust Programming Language
 
 <!--What are the problems with C & Java?--> For many years, C has been used as the main-goto low-level system development language. While C is very optimized, it is also unsafe. Mistakes in pointer aliasing, pointer arithmetic and typecasting can be hard to detect, even for advanced software verification tools. Meanwhile, high level languages like Java solve the safety issues through a runtime which manages memory with garbage collection. This safety comes at a cost since garbage collection incurs a big overhead.
 
 <!--What is Rust, and what makes it special?--> Rust is a relatively new low-level programming language. It achieves both performance and safety through a memory management policy based on ownership. In addition, Rust provides many zero-cost abstractions, e.g., pattern matching, generics, traits, and type inference. Packages, e.g., binaries and libraries, in Rust are referred to as crates. Cargo is a crate manager for Rust which can download, compile, and publish crates. Rust has a big ecosystem of open-source crates which can be browsed on `https://crates.io`. Since Rust's original release, it has seen multiple major revisions. Some dropped features include a typestate system <!--https://github.com/rust-lang/rust/commit/41a21f053ced3df8fe9acc66cb30fb6005339b3e-->, and a runtime system with green threaded-abstractions <!--https://github.com/rust-lang/rust/pull/18967-->.
 
-### Ownership
+# ## Ownership
 
-In Rust, when a variable is bound to an object, it takes ownership of that object. Ownership can be transferred to a new variable, which in consequence breaks the original binding. Variables can however temporarily borrow ownership of an object without breaking the binding. An object can be either mutably borrowed by at most one variable, or immutably borrowed by any number of variables. Hence, objects cannot be mutably and immutably borrowed at the same time.
+In Rust, when a variable is bound to an object, it takes ownership of that object. Ownership can be transferred to a new variable, which in consequence breaks the original binding. Variables can however temporarily borrow ownership of an object without breaking the binding. An object can be either mutably borrowed by at most one variable, or immutably borrowed by any number of variables. Thus, objects cannot be mutably and immutably borrowed at the same time.
 
-By restricting aliasing, ownership solves many safety issues found in other low level languages, such as double-free errors, i.e., freeing the same memory address twice. Moreover, Rust effectively eliminates the risk of data-races as ownership applies across threads.
+By restricting aliasing, Rust solves many safety issues found in other low level languages, such as double-free errors, i.e., freeing the same memory address twice. Moreover, Rust effectively eliminates the risk of data-races as ownership applies across threads.
 
-### Lifetimes
+# ## Lifetimes
 
-Objects are dropped, i.e., de-allocated, when their owner variable's lifetime ends. The lifetime of a variable in Rust is currently determined by the Lifetime is 
+Objects are dropped, i.e., de-allocated, when their owner variable's lifetime ends. Lifetimes in Rust are currently lexical. In other words, a variable's lifetime ends when it leaves its lexical scope. This model will be changed in the near future into a more flexible one called non-lexical lifetimes [https://github.com/nikomatsakis/nll-rfc/blob/master/0000-nonlexical-lifetimes.md]. Non-lexical lifetimes use liveness analysis. A variable's lifetime ends when it is no longer live, i.e., when it will no longer be used at a later time. While the current model is based on the abstract syntax tree, the future will be based on the control flow graph.
 
-### Mutable aliasing
+# ## Mutable aliasing
 
 Ownership can in some cases be too restrictive. There are in general two ways to achieve mutable aliasing. The first way is to use a reference counter (`Rc<T>`) together with interior mutability (`RefCell<T>`). The reference counter, i.e., smart pointer, allows an object to be immutably owned by multiple variables simultaneously. An object's reference counter is incremented whenever a new ownership binding is made, and decremented when one is released. If the counter reaches zero, the object is de-allocated. Interior mutability lets an object be mutated even when there exists immutable references to it. It works by wrapping an object in a `RefCell`. Variables with a mutable or immutable reference to the `RefCell` can then mutably borrow the wrapped object. By combining reference counting with interior mutability (`Rc<RefCell<T>>`), multiple variables can own the `RefCell` immutably, and are able to borrow the object inside mutably.
 
 The other way of achieving mutability is through unsafe blocks. Unsafe blocks are blocks of code wherein raw pointers can be dereferenced. Raw pointers are pointers without any safety guarantees. Multiple raw pointers can point to the same memory, and the memory they point to might not be allocated. Code inside of unsafe blocks have the potential to cause segmentation faults or other undefined behavior and should be used with caution.
 
-### Use cases
+# ## Use cases
 
-Upfront, ownership might appear to be more of a restriction than a benefit compared to other memory models. Other languages might be better for prototyping. Albeit the restrictiveness, ownership can solve complex security concerns such as Software Fault Isolation (SFI) and Static Information Control (IFC).
+Ownership might appear to be more of a restriction than a benefit as it imposes another layer of semantic complexity on the programmer. Thereby, Rust might not be the ideal prototyping language. Albeit the restrictiveness, ownership can solve complex security concerns such as Software Fault Isolation (SFI) and Static Information Control (IFC).
 
 Software fault isolation (SFI) enforces safe boundaries between software modules. A module should not be able to access the another's data without permission. As an example, C can violate SFI since a pointer in one module could potentially access another module's heap space. In contrast, Rust's ownership policy ensures that an object in memory is naturally accessible by only one pointer. Ownership, and information, can securely be transferred between modules without violating SFI.
 
 Static information control (IFC) enforces confidentiality by tracing information routes of private data. This becomes very complex in languages such as C where aliasing can explode the number of information routes. Meanwhile, IFC is easier in Rust due to its aliasing restrictions.
 
-## RustBelt
+# # RustBelt
 
 Rust is a new programming language designed to overcome the tradeoff between the safety of high-level languages and control of low-level languages. The core design behind Rust is ownership. Previous approaches to ownership were either too restrictive or too expressive. Rust's ownership discipline is that an object cannot be mutated while being aliased. This eliminates the risk for data races. In cases where this model is too restrictive, Rust provides unsafe operations for mutating aliased state. Safety of these operations cannot be ensured by the Rust compiler.
 
 While Rust is safe without using unsafe operations, it is questionable how safe its libraries are. Many Rust libraries, including the standard library, makes use of unsafe operations. RustBelt is an extension to Rust which verifies the soundness of code that uses unsafe operations. It builds a semantic model of the language which is then verified against typing rules. A well-typed program should not express any undefined behavior.
 
-## Domain Specific Languages (DSL)
+# # Domain Specific Languages (DSL)
 
 Domain Specific Languages (DSLs) are small languages suited to interfacing with a specific domain. Domain contexts can be implemented directly in general purpose languages (GPLs) without the use of DSLs, but this would require many more lines of code.
 
@@ -233,39 +229,39 @@ It is possible to combine the two embedding styles and keep most of their streng
 
 Another approach is the Finally Tagless technique. It uses an interface to abstract over all interpretations. The interface can be implemented to create different concrete interpretations. New constructs and interpretations can be added with ease. Constructs are added by supplementing the interface with new methods. Interpretations are added by creating new instances of the interface.
 
-## The Scala Programming Language
+# # The Scala Programming Language
 
-### Macros
+# ## Macros
 
 Scala version 2.10 introduced macros. Macros enable compile-time metaprogramming. They have many uses, including boilerplate code generation, language virtualization and programming of embedded DSLs. Macros in Scala are invoked during compilation and are provided with a context of the program. The context can be accessed with an API, providing methods for parsing, type-checking and error reporting. This enables macros to generate context-dependent code. Scala provides multiple types of macros: def macros, dynamic macros, string interpolation macros, implicit macros, type macros and macro annotations.
 
-## Code generation
+# # Code generation
 
 * Generate binary directly, or generate Rust and compile?
 
-### Transpilers
+# ## Transpilers
 
-## Domain Specific Languages (DSLs)
+# # Domain Specific Languages (DSLs)
 
-## External DSL
+# # External DSL
 
-## Embedded DSL
+# # Embedded DSL
 
-### Parser Combinators
+# ## Parser Combinators
 
-### Parser Generators
+# ## Parser Generators
 
 Regex - non-recursive
 
-### Lightweight Modular Staging (LMS)
+# ## Lightweight Modular Staging (LMS)
 
-### Delite
+# ## Delite
 
-## Apache Flink
+# # Apache Flink
 
-## Bottlenecks
+# # Bottlenecks
 
-## Hardware acceleration
+# # Hardware acceleration
 
 # Design
 
