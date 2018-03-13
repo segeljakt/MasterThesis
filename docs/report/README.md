@@ -58,7 +58,7 @@ header-includes:
 
 <!--What is this thesis about?--> This thesis is part of a five year project by KTH and RISE SICS to develop a system capable of CDA. The CDA system must be able to run for long periods of time without interruption. It must also be capable of processing incoming queries in short time windows to support real-time decision making. CDA is aimed towards both the public sector and industry. It will enable new time-sensitive applications such as zero-time defense for cyber-attacks, fleet driving and intelligent assistants. These applications involve machine learning and graph analytics, both of which might require large scale data intensive matrix or tensor computations. Finishing these computations in short periods of time is infeasible without hardware acceleration. The system thereby needs to be able to exploit the available hardware resources to speedup computation.
 
-<!--What are the problems with Hardware Acceleration?--> Hardware acceleration is not easy. Developers must have expertise with multiple APIs and programming models which interface with the drivers, e.g., CUDA, OpenCL, OpenMP and MPI [@Virtualization]. As interfaces change, developers need to update their code. Moreover, machines in distributed systems can have various hardware configurations. For example, when scaling out, one may choose to add new machines with better hardware. This becomes an issue as code for one architecture might not be portable to others.
+<!--What are the problems with Hardware Acceleration?--> Hardware acceleration is not easy. Developers must have expertise with multiple APIs and programming models which interface with the drivers, e.g., CUDA, OpenCL, OpenMP and MPI [@Virtualization]. As interfaces change, developers need to update their code. Moreover, machines in distributed systems can have various hardware configurations. For example, when scaling out, one may choose to add new machines with completely different hardware. This becomes an issue as code for one architecture might not be portable to others.
 
 <!--How do modern systems solve these problems? (Hardware Virtualization)--> In consequence, many distributed systems use hardware virtualization to abstract the physical hardware details away from the user [@Virtualization]. Spark and Flink realize hardware virtualization through the Java Virtual Machine (JVM) [@Spark, @Flink]. While the JVM is highly optimized and portable, it is not well suited for interfacing with the GPU [@SOURCE]. It also has a big runtime overhead, partially from garbage collection. Evaluation by [@SOURCE] has shown that a laptop running handwritten low-level code can outperform a 128 core native Spark cluster in PageRank. The evaluation measured 20 PageRank iterations for medium sized graphs of ~105M nodes and ~3.5B edges <!--http://law.di.unimi.it/webdata/uk-2007-05/-->.
 
@@ -124,15 +124,23 @@ In terms of ethics, it is crucial that the code generator does not generate bugg
 
 <!--What are the existing solutions?-->
 
+# ## Spark and Spark SQL
+
+Spark was designed to solve the limitations of MapReduce [@Spark: Cluster Computing with Working Sets]. While MapReduce is able to perform large-scale computations on commodity clusters, it has an acyclic dataflow model which limits its number of applications. Iterative applications such as most machine learning algorithms, and interactive analytics are not feasible on MapReduce. Spark is able to support these features, while possessing the scalability and reliability of MapReduce. The core abstraction of Spark is a Resilient Distributed Dataset (RDD). An RDD is a read-only collection of objects, partitioned over a cluster. The RDD stores its lineage, i.e., the operations which were applied to it, which lets it re-build lost partitions.
+
+Spark has two forms of operations: transformations and actions [@https://spark.apache.org/docs/2.2.0/rdd-programming-guide.html]. Transformations, e.g., map, and foreach, transform an RDD into a new RDD. Actions, e.g., reduce, and collect, returns the RDD's data to the driver program. All transformations and lazily evaluated. Lazy evaluation is a common optimization in distributed processing. With lazy evaluation, data in a distributed computation is materialized only when necessary. This speeds up performance by reducing the data movement overhead. [@Weld]
+
+Spark SQL is an extension to Spark which brings support for relational queries [@https://people.csail.mit.edu/matei/papers/2015/sigmod_spark_sql.pdf]. It introduces a DataFrame abstraction. DataFrames are v
+
 # ## Flare
 
 <!--What is the most relevant piece related work?--> Our approach to code generation draws inspiration from Flare which is a back-end to Spark [@Flare]. Flare bypasses Spark's inefficient abstraction layers by compiling queries to native code, replacing parts of the Spark runtime, and by extending the scope of optimizations and code generation to UDFs. Flare is built on top of Delite which is a compiler framework for high performance DSLs, and LMS, a generative programming technique. When applying Flare, Spark's query performance improves significantly and becomes equivalent to HyPer, which is one of the fastest SQL engines. 
 
 # ## Weld
 
-<!--Problem with libraries--> Libraries are naturally modular: they take input from main memory, process it, and write it back [@Weld]. As a side effect, successive calls to functions of different libraries might require materialization of intermediate results, and hinder lazy evaluation. Lazy evaluation is a common optimization in distributed processing. With lazy evaluation, data in a distributed computation is materialized only when the computation is finished. This speeds up performance by reducing the data movement overhead.
+<!--Problem with libraries--> Libraries are naturally modular: they take input from main memory, process it, and write it back [@Weld]. As a side effect, successive calls to functions of different libraries might require materialization of intermediate results, and hinder lazy evaluation.
 
-<!--How Weld solves it-->Weld solves the aforementioned problem by providing a common interface between libraries. Libraries submit their computations in IR code to a lazily-evaluated runtime API. The runtime dynamically compiles the IR code fragments and applies various optimizations such as loop tiling, loop fusion, vectorization and common sub-expression elimination. The IR is minimalistic with only two abstractions: builders and loops. Builders are able to construct and materialize data, without knowledge of the underlying hardware. Loops consume a set of builders, apply an operation, and produce a new set of builders. By optimizing the data movement, Weld is able to speedup programs using Spark SQL, NumPy, Pandas and Tensorflow by at least 2.5x.
+<!--How Weld solves it-->Weld solves the problem of materialization by providing a common interface between libraries. Libraries submit their computations in IR code to a lazily-evaluated runtime API. The runtime dynamically compiles the IR code fragments and applies various optimizations such as loop tiling, loop fusion, vectorization and common sub-expression elimination. The IR is minimalistic with only two abstractions: builders and loops. Builders are able to construct and materialize data, without knowledge of the underlying hardware. Loops consume a set of builders, apply an operation, and produce a new set of builders. By optimizing the data movement, Weld is able to speedup programs using Spark SQL, NumPy, Pandas and Tensorflow by at least 2.5x.
 
 # ## ScyllaDB
 
@@ -176,6 +184,10 @@ Only Rust will be used as the target language for code generation. It would be i
 # Background
 
 The following sections describe the Rust programming language, Domain Specific Languages and the Scala language.
+
+# ## Scalability
+
+There are two general approaches to scaling a distributed system: scaling up and scaling out [@Scale-up x Scale-out: A Case Study using Nutch/Lucene]. Scaling up involves modifying existing machines to make them more powerful. This can be expensive, but also effective as it is almost guaranteed to improve performance. Scaling out instead adds new machines to the network rather than modifying existing ones. It is cheaper since the new machines do not necessarily have to be more powerful. The downside is the increase in network communication and management costs for each machine added to the network.
 
 # # The Rust Programming Language
 
