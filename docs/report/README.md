@@ -285,4 +285,6 @@ Regex - non-recursive
 
 # Conclusion
 
+The CDA system, like other distributed systems, will distribute its workers over multiple machines. Multiple workers may execute concurrently on the same machine as well. Workers expect to have exclusive access to their machine's low-level hardware resources. With virtualization, it becomes easier to distribute these resources among workers executing concurrently on the same machine. Virtualization software prevents resource conflicts between operative systems. 
+[@https://superuser.com/questions/333297/is-it-possible-to-dual-boot-two-oss-at-the-same-time]
 <!--\End{multicols*}-->
