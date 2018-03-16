@@ -29,6 +29,15 @@ https://github.com/rust-lang/rust/issues/4632
 * GC pointers, task local GC (yes, rustboot had a real mark/sweep) https://github.com/rust-lang/rust/pull/18967
 * Dynamic, structural object types
 
+# AST
+* Concrete Syntax Tree: Concrete identifiers + Concrete structure (Parse Tree)
+* Abstract Syntax Tree: Concrete identifiers + Abstract structure (Requires name resolution)
+* Higher Order Abstract Syntax Tree: Abstract identifiers + Abstract structure
+
+* Abstract Semantic Graph
+
+http://www.lix.polytechnique.fr/Labo/Dale.Miller/papers/slp87.pdf
+https://en.wikipedia.org/wiki/Abstract_syntax
 
 # RFCs
 
