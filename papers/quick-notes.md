@@ -43,3 +43,11 @@ https://en.wikipedia.org/wiki/Abstract_syntax
 
 https://docs.google.com/spreadsheets/d/18FtPnEI8RTPdFhGDtj21ITndakEtxVrs8pVzRNx-jL8/edit#gid=0
 ./configure
+
+# TypeClasses
+http://like-a-boss.net/2013/03/29/polymorphism-and-typeclasses-in-scala.html
+
+Subtype polymorphism
+Parametric polymorphism
+Ad-hoc polymorphism
+And that’s what’s really cool about typeclasses. We can add new functionality to old code without modifying it.

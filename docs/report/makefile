@@ -17,7 +17,12 @@ DST_PATH=$(DOC).$(DST_FMT)
 STL_PATH=/Users/Klas/Git/writing/styles/ieee-with-url.csl
 BIB_PATH=~/.vim/bibtex/library.bib
 TEM_PATH=/Users/Klas/Git/writing/markdown.latex
+FIL_PATH=/Users/Klas/Git/writing/markdown-filters
 # Flags
+DOC_FLAGS += --filter pandoc-tablenos
+DOC_FLAGS += --filter pandoc-fignos
+#DOC_FLAGS += --lua-filter $(FIL_PATH)/wordcount/wordcount.lua
+#DOC_FLAGS += --lua-filter $(FIL_PATH)/short-captions/short-captions.lua
 DOC_FLAGS += --bibliography $(BIB_PATH)
 DOC_FLAGS += --csl=$(STL_PATH)
 DOC_FLAGS += --template $(TEM_PATH)
