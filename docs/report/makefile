@@ -19,20 +19,22 @@ BIB_PATH=~/.vim/bibtex/library.bib
 TEM_PATH=/Users/Klas/Git/writing/markdown.latex
 FIL_PATH=/Users/Klas/Git/writing/markdown-filters
 # Flags
+DOC_FLAGS += --listings
 DOC_FLAGS += --filter pandoc-tablenos
 DOC_FLAGS += --filter pandoc-fignos
-#DOC_FLAGS += --lua-filter $(FIL_PATH)/wordcount/wordcount.lua
 #DOC_FLAGS += --lua-filter $(FIL_PATH)/short-captions/short-captions.lua
+COUNT_FILTER =  --lua-filter $(FIL_PATH)/wordcount/wordcount.lua
 DOC_FLAGS += --bibliography $(BIB_PATH)
 DOC_FLAGS += --csl=$(STL_PATH)
 DOC_FLAGS += --template $(TEM_PATH)
 DOC_FLAGS += -N
 #DOC_FLAGS += -mathml
-#DOC_FLAGS += --listings
 DOC_FLAGS += --pdf-engine=pdflatex
 #-------------------------------------------------------------------------------
 $(DOC):
 	$(DOCC) $(SRC_PATH) $(DOC_FLAGS) -o $(DST_PATH)
 #################################### CLEAN #####################################
+count:
+	$(DOCC) $(SRC_PATH) $(DOC_FLAGS) $(COUNT_FILTER) -o $(DST_PATH)
 clean:
 	rm $(DST_PATH)

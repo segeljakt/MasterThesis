@@ -25,7 +25,6 @@ keywords:
   - Rust
   - Scala
 header-includes:
-  - \fancyfoot[C]{\thepage\ of \pageref{LastPage}}
   - \newcommand{\hideFromPandoc}[1]{#1}
   - \hideFromPandoc{\let\Begin\begin \let\End\end}
   - \usepackage{float}
@@ -36,8 +35,8 @@ header-includes:
    } {
        \endorigfigure
    }
-abstract: <!--Introduction, Problem--> Continuous Deep Analytics is a new type of analytics with performance requirements exceeding what systems like Spark and Flink can offer. The backbone of these systems is the Java Virtual Machine (JVM). While the JVM is portable, it is a also performance bottleneck due to its garbage collector. <!--Motivation--> A portable runtime with high-performance, capable of running efficiently on heterogeneous architectures, is needed. <!--Solution--> We have developed a code generator as a framework for this runtime. Instead of running portable but slow Java code, optimized Rust code will be generated and compiled to different architectures. By generating Rust code, as opposed to C or C++ code which is the common approach, we achieve stronger safety guarantees. The code generator will be used in a five year project by KTH and RISE SICS. In this project a new distributed system will be developed to meet the demands of CDA. <!--Limitations--> Due to time constraints, the generator is at present restricted to a sample of the Rust language. It is however designed to be extensible in respect to adding new constructs. <!--Future work--> Adding full support for all of Rust's features is left for future work.
-abstrakt: ???
+abstract: <!--Introduction, Problem--> Continuous Deep Analytics is a new type of analytics with performance requirements exceeding what current generation distributed systems can offer. The backbone of these systems, e.g., Spark and Flink, is the Java Virtual Machine (JVM). While the JVM is portable, it is a also performance bottleneck due to its garbage collector. <!--Motivation--> A portable runtime with high-performance, capable of running efficiently on heterogeneous architectures, is needed. <!--Solution--> We have developed a code generator as a framework for this runtime. Instead of running portable but slow Java code, optimized Rust code will be generated and cross compiled to different architectures. By generating Rust code, as opposed to C or C++ code which is the common approach, we achieve stronger safety guarantees. The code generator will be used in a five year project by KTH and RISE SICS. In this project a new distributed system will be developed to meet the demands of CDA. <!--Limitations--> Due to time constraints, the generator is at present restricted to a sample of the Rust language. It is however designed to be extensible in respect to adding new constructs. <!--Future work--> Adding full support for all of Rust's features is left for future work.
+abstrakt: <!--Introduction, Problem--> Continuous Deep Analytics is a new type of analytics with performance requirements exceeding what current generation distributed systems can offer. The backbone of these systems, e.g., Spark and Flink, is the Java Virtual Machine (JVM). While the JVM is portable, it is a also performance bottleneck due to its garbage collector. <!--Motivation--> A portable runtime with high-performance, capable of running efficiently on heterogeneous architectures, is needed. <!--Solution--> We have developed a code generator as a framework for this runtime. Instead of running portable but slow Java code, optimized Rust code will be generated and cross compiled to different architectures. By generating Rust code, as opposed to C or C++ code which is the common approach, we achieve stronger safety guarantees. The code generator will be used in a five year project by KTH and RISE SICS. In this project a new distributed system will be developed to meet the demands of CDA. <!--Limitations--> Due to time constraints, the generator is at present restricted to a sample of the Rust language. It is however designed to be extensible in respect to adding new constructs. <!--Future work--> Adding full support for all of Rust's features is left for future work. 
 ---
 
 \newpage
@@ -68,15 +67,15 @@ Keywords:
 
 # Introduction
 
-<!--What is CDA?--> Deep Analytics, or Big Data Analytics, is the application of data intensive processing techniques in the field of data mining [@DeepAnalytics]. Data can come from multiple sources in a structured, semi-structured or unstructured format. Continuous Deep Analytics (CDA) is a new form of Deep Analytics where data is both massive, unbound, and live [@ContinuousDeepAnalytics].
+<!--What is CDA?--> Deep Analytics, or Big Data Analytics, is the application of data intensive processing techniques in the field of data mining [@DeepAnalytics]. Data can come from multiple sources in a structured, semi-structured or unstructured format. Continuous Deep Analytics (CDA) is a new form of Deep Analytics where data is also massive, unbound, and live [@ContinuousDeepAnalytics].
 
-<!--What is this thesis about?--> This thesis is part of a five year project by KTH and RISE SICS to develop a system capable of CDA [@ContinuousDeepAnalytics]. The CDA system must be able to run for long periods of time without interruption. It must also be capable of processing incoming queries in short time windows to support real-time decision making. CDA is aimed towards both the public sector and industry. It will enable new time-sensitive applications such as zero-time defense for cyber-attacks, fleet driving and intelligent assistants. These applications involve machine learning and graph analytics, both of which might require large scale data intensive matrix or tensor computations. Finishing these computations in short periods of time is infeasible without hardware acceleration. The system thereby needs to be able to exploit the available hardware resources to speedup computation.
+<!--What is this thesis about?--> This thesis is part of a five year project by KTH and RISE SICS to develop a system capable of CDA [@ContinuousDeepAnalytics]. The CDA system must be able to run for long periods of time without interruption. It also needs be capable of processing incoming queries in short time windows to support real-time decision making. CDA is aimed towards both the public sector and industry. It will enable new time-sensitive applications such as zero-time defense for cyber-attacks, fleet driving and intelligent assistants. These applications involve machine learning and graph analytics, both of which can require large scale, data intensive, matrix or tensor computations, e.g., affine transformations and convolutional operations [@DeepLearningBook]. Being able to finish these computations in real time is infeasible without hardware acceleration. The system thereby needs to be able to optimally exploit available hardware resources to speedup computation.
 
-<!--What are the problems with Hardware Acceleration?--> Hardware acceleration is not easy. Developers must have expertise with multiple APIs and programming models which interface with the drivers, e.g., CUDA, OpenCL, OpenMP and MPI [@Virtualization]. When interfaces change, developers need to update their code. Moreover, machines in distributed systems can have various hardware configurations. For example, when scaling out, one may choose to add new machines with different hardware. This becomes an issue as code for one architecture might not be portable to others.
+<!--What are the problems with Hardware Acceleration?--> Hardware acceleration is not easy. Developers must have expertise with multiple APIs and programming models which interface with the drivers, e.g., CUDA, OpenCL, OpenMP and MPI [@Virtualization]. When interfaces change, developers need to update their code. Machines in distributed systems can have various hardware configurations. For example, when scaling out, one may choose to add new machines with different hardware. This becomes an issue as code for one machine might not be portable to others.
 
-<!--How do modern systems solve these problems? (Hardware Virtualization)--> In consequence, many distributed systems use hardware virtualization to abstract the physical hardware details away from the user [@Virtualization]. Spark and Flink realize hardware virtualization through the Java Virtual Machine (JVM) [@Spark, @Flink]. While the JVM is optimized and portable, it is not well suited for interfacing with the GPU [@SOURCE]. It also has a big runtime overhead, in part owed to garbage collection. Evaluation by [@SOURCE] has revealed that a laptop running handwritten low level code can outperform a 128 core native Spark cluster in PageRank. The evaluation measured 20 PageRank iterations for medium sized graphs of ~105M nodes and ~3.5B edges <!--http://law.di.unimi.it/webdata/uk-2007-05/-->.
+<!--How do modern systems solve these problems? (Hardware Virtualization)--> The solution to the problem of hardware heterogeneity is hardware virtualization, which abstracts the physical hardware details away from the user [@Virtualization]. Spark and Flink realize hardware virtualization through the Java Virtual Machine (JVM) [@Spark, @Flink]. While the JVM is optimized and portable, its support for accelerator architectures, e.g., GPUs, is currently limited [@HJOpenCL]. It also has a big runtime overhead, in part owed to garbage collection. Evaluation by [@PagerankEvaluation] has revealed that a laptop running single threaded low level code can outperform a 128 core Spark cluster in PageRank. High end graph stream processing systems, GraphLab and GraphX, were outperformed as well. The evaluation measured 20 PageRank iterations for two medium sized graphs, with the largest being ~105M nodes and ~3.5B edges. An industry standard benchmark by [@Flare] revealed that Spark SQL spends close to 80% of its execution decoding in-memory data representations. Even when removing this indirection, performance remains 30% lower than hand written C code.
 
-<!--What could be a better solution? (Code Generation)--> The CDA system will try to obtain both portability and performance at the same time through code generation. A rough draft of the system architecture can be viewed in {@fig:CDA}. Instead of writing different code for different hardware, one will write code which is generated for different hardware. At the front-end, the user will describe the desired behavior of the data streaming pipeline in a high level declarative language. The front-end code is then converted into an IR. The IR will contain information about the execution plan and cluster setup. The execution plan will first be optimized logically through dataflow analysis, and then physically by mapping tasks to machines. Next, low level code will be generated and compiled for each task, tailored to its machine's hardware. Finally, binaries are deployed in the cluster.
+<!--How will CDA approach this problem?--> The CDA system will try to obtain both portability and performance simultaneously through code generation. An early overview of the system can be viewed in {@fig:CDA}. Instead of writing different code for different hardware, one will write code which is generated for different hardware. At the front-end, the user describes the desired behavior of the data processing program in a high level declarative language. The front-end code is then converted into an IR which contains information about the execution plan and cluster setup. Then, the execution plan is optimized logically through dataflow analysis, and physically by mapping tasks to machines. Next, low level code is be generated and compiled for each task, tailored to its machine's hardware. Finally, binaries are deployed in the cluster.
 
 ![An overview of CDA.](CDA.png){#fig:CDA width=60% height=60%}
 
@@ -93,11 +92,11 @@ Keywords:
 <!--Problem statement.-->
 <!--References.-->
 
-<!--What are problems with today's code generators?--> C and C++ are a commonly used as the target language for code generation. While both compile to fast machine code, neither provide strong safety guarantees. Double free errors, null pointer dereferences and segmentation faults are recurrent errors [@RustBelt]. The CDA code generator will therefore instead emit Rust code. Rust is a recent programming language which achieves both safety and performance through a special memory policy. To our knowledge, no Rust code generation framework exists yet for Scala. Thereby, the problem is to implement this framework.
+<!--What are problems with today's code generators?--> C and C++ are a commonly used as the target language for code generation [@source]. While both compile to fast machine code, neither provide strong safety guarantees. Double free errors, null pointer dereferences and segmentation faults are recurrent errors [@RustBelt]. The CDA code generator will therefore instead emit Rust code. Rust is a recent programming language which achieves both safety and performance through a special memory policy. No Rust code generation DSL exists yet for Scala. Thereby, the problem is to implement this framework.
 
 <!--How is the project split?--> The code generator is composed of two parts. First, it must be able to provide an interface for expressing the Rust language in Scala. The representation will be in the form of an Abstract Syntax Tree (AST). Then, it should be able to output the corresponding Rust code and compile it to an executable. This thesis focuses on the former part, while the latter is covered in a thesis by Oscar Bjuhr.
 
-<!--What are the design goals--> The code generator is expected to be in a usable state after finishing the thesis. For this to happen, the following design goals must be satisfied.
+<!--What are the design goals--> The code generator is expected to be in a usable state after finishing the thesis. Thereby the following design goals, adopted from [@Polymorphic], must be satisfied.
 
 <!--Completeness-->
 
@@ -128,18 +127,6 @@ Performance
 : The framework should not take long time to execute as the driver must translate incoming IR into executables on the fly.
 
 <!--Problem Statement--> The problem statement can be defined as: "How do you implement a framework for generating Rust code in Scala with respect to the design goals?".
-
-<!--Central addressed issue of this thesis--> The front end of systems such as Spark and Flink consists of a query interface. The interface provides a set of transformers and actions. Users can also define custom user defined functions (UDFs).
-
-For a given query, the code generator must both optimize each stage of the query and the query plan as a whole. Another issue is User Defined Functions (UDFs). UDFs are black boxes whose functionality might not be known at compile time. The task of optimizing these is a monumental challenge, and will be left out for future work. Another topic of interest is whether code also could be generated for the network layer. Most modern day switches are programmable, and could allow for further optimizations [@SOURCE].
-
-<!--Challenges--> A possible approach to mitigate the performance loss, while still maintaining portability is to use a domain specific language Domain Specific Language (DSL) [@Delite]. DSLs are minimalistic languages, tailor-suited to a certain domain. They bring domain-specific optimizations which general-purpose languages such as Java are unable to provide. DSLs can optimize further by generating code in a low level language, and compiling it to binary code which naturally runs faster than byte code. C and C++ are commonly used as the target low level language. We regard Rust as a candidate as it provides safe and efficient memory management through ownership.
-
-Previous work by [@SOURCE] has shown that Spark's performance can be improved to be much faster through the use of DSLs. There is no equivalent solution yet for Flink, and this thesis aims to address this. The problem can be summarized as the following problem statement: How can Apache Flink's performance be improved through a Rust DSL?
-
-The program generator is written in a meta-language, and generates hardware-sensitive code for a target-language.
-
-The code generator is written programmed with a DSL. DSLs are minimalistic languages, tailor-suited to a certain problem domain.
 
 ## Purpose
 
@@ -207,7 +194,7 @@ When generating code, Voodoo assigns an Extent and Intent value to each code fra
 
 ## Outline
 
-<!--What is covered in each section?.-->Section 2 goes through the relevant background of Rust, Scala, and code-generation. The CDA code-generation framework's design, and how it fits into the overall system, is covered in section 3. Section 5 provides implementation details, and section 6 evaluates the implementation with general use cases. Following, section 7 discusses the results with respect to the design goals. Finally, section 8 concludes with mentions about the future of CDA.
+<!--What is covered in each section?.--> Section 2 goes through the relevant background of Rust, Scala, and code-generation. The CDA code-generation framework's design, and how it fits into the overall system, is covered in section 3. Section 5 contains implementation details, and section 6 evaluates the implementation with general use cases. Section 7 discusses the results with respect to the design goals. Finally, section 8 concludes with mentions about the future of CDA.
 
 # Background
 
@@ -215,13 +202,13 @@ The following sections describe the Rust programming language, the Scala program
 
 ## The Rust Programming Language v1.26.0
 
-<!--What are the problems with C & Java?--> For many years, C has been used as the main goto low level system development language. While C is very optimized, it is also unsafe. Mistakes in pointer aliasing, pointer arithmetic and typecasting can be hard to detect, even for advanced software verification tools. Meanwhile, high level languages like Java solve the safety issues through a runtime which manages memory with garbage collection. This safety comes at a cost since garbage collection incurs a big overhead.
+<!--What are the problems with C & Java?--> For many years, C has been used as the main goto low level system development language [@SOURCE]. While C is very optimized, it is also unsafe. Mistakes in pointer aliasing, pointer arithmetic and typecasting can be hard to detect, even for advanced software verification tools. Meanwhile, high level languages like Java solve the safety issues through a runtime which manages memory with garbage collection. This safety comes at a cost since garbage collection incurs a big overhead.
 
-<!--What is Rust, and what makes it special?--> Rust is a modern programming language designed to overcome the tradeoff between the safety of high level languages and control of low level languages[@RustBelt]. It achieves both performance and safety through a memory management policy based on ownership. Ownership prevents data from being mutated while being aliased. In addition, Rust provides many zero-cost abstractions, e.g., pattern matching, generics, traits, and type inference.
+<!--What is Rust, and what makes it special?--> Rust is a modern programming language designed to overcome the tradeoff between the safety of high level languages and control of low level languages [@RustBelt]. It achieves both performance and safety through a memory management policy based on ownership. Ownership prevents data from being mutated while being aliased. In addition, Rust provides many zero-cost abstractions, e.g., pattern matching, generics, traits, and type inference.
 
-Packages, e.g., binaries and libraries, in Rust are referred to as crates. Cargo is a crate manager for Rust which can download, compile, and publish crates. A large collection of open-source crates can be browsed on `https://www.crates.io`. Like many other software projects, Rust has a both a stable and nightly build. The nightly build is updated on a daily-basis with new experimental features that may eventually get integrated into the stable build.
+Packages, e.g., binaries and libraries, in Rust are referred to as crates. Cargo is a crate manager for Rust which can download, compile, and publish crates. A large collection of open-source crates can be browsed on `https://www.crates.io`. Like most other software projects, Rust has a both a stable and nightly build. The nightly build is updated on a daily-basis with new experimental features that may eventually get integrated into the stable build.
 
-Since Rust's original release, it has seen multiple major revisions. Dropped features include a typestate system <!--https://github.com/rust-lang/rust/commit/41a21f053ced3df8fe9acc66cb30fb6005339b3e-->, and a runtime system with green threaded-abstractions <!--https://github.com/rust-lang/rust/pull/18967-->. A subset of Rust's current features are listed in table {@tbl:rust}. Many of the features are present in other programming languages. Rust's defining features are ownership and lifetimes. These are explained in the following sections. Useful features include doc comments, which lets the user write documentation directly in the code in a markdown format. Cargo can afterwards generate `.pdf` files or wikis from the doc comments. The defining features are ownership and lifetimes. Other useful features are doc comments, for features to RustMost features are present in other languages.
+Since Rust's original release, it has seen multiple major revisions. Dropped features include a typestate system <!--https://github.com/rust-lang/rust/commit/41a21f053ced3df8fe9acc66cb30fb6005339b3e-->, and a runtime system with green threaded-abstractions <!--https://github.com/rust-lang/rust/pull/18967-->. A subset of Rust's current features are listed in table {@tbl:rust}. Many of the features are present in other programming languages. The defining features of Rust are ownership and lifetimes. These are explained in the following sections. Useful features include doc comments, which lets the user write documentation directly in the code in a markdown format. Cargo can afterwards generate `.pdf` files or wikis from the doc comments.
 
 |                             |                      |                   |
 |-----------------------------+----------------------+-------------------|
@@ -237,7 +224,11 @@ Since Rust's original release, it has seen multiple major revisions. Dropped fea
 | Functions                   | Primitives           | Variables         |
 | Generics                    | Raw pointers         | Vectors           |
 
-: A subset of Rust's features, listed in alphabetic order. {#tbl:rust}
+: A subset of Rust's features, listed in alphabetic order. Key features are marked in bold. {#tbl:rust short-caption="A subset of Rust's features"}
+
+### Syntax
+
+Rust's syntax consists of *expressions* and *statements*. Expressions always evaluate to a value, and can have side effects. Unlike C, Rust's control flow constructs, e.g., loops and if-else, can be *side-effect* free. For instance, loops can return a value. Statements are divided into two categories: *declaration statements* and *expression statements*. A declaration statement introduces a new name, for a variable or item, into a namespace. Variables are by default declared immutable, and are visible until end of scope. Items are components, e.g., enums, structs and functions, belonging to a crate. Expression statements are expressions which ignore the result, and as a result only have side-effects. All statements and expressions can have 
 
 ### Ownership
 
@@ -247,25 +238,46 @@ By restricting aliasing, Rust solves many safety issues found in other low level
 
 ### Lifetimes
 
-Objects are dropped, i.e., de-allocated, when their owner variable's lifetime ends. Lifetimes in Rust are currently lexical. In other words, a variable's lifetime ends when it leaves its lexical scope. This model will be changed in the near future into a more flexible one called non-lexical lifetimes [https://github.com/nikomatsakis/nll-rfc/blob/master/0000-nonlexical-lifetimes.md]. Non-lexical lifetimes are resolved through liveness analysis. A variable's lifetime ends when it is no longer live, i.e., when it will no longer be used at a later time. It is possible to determine a lexical lifetime solely by analyzing the AST. Non-lexical lifetimes require more information, and are as a result calculated at a later stage, after the compiler has assembled the control-flow graph.
+Objects are dropped, i.e., de-allocated, when their owner variable's lifetime ends. Lifetimes in Rust are currently lexical. A variable's lifetime ends when it leaves its lexical scope. This model will be changed in the near future into non-lexical lifetimes which allow for more fine-grained control [@NLL]. Non-lexical lifetimes are resolved through liveness analysis. A variable's lifetime ends when it is no longer live, i.e., when it will no longer be used at a later time. It is possible to determine a lexical lifetime solely by analyzing the AST. Non-lexical lifetimes require more information, and are as a result calculated at a later stage, after the compiler has assembled the control-flow graph. A comparison, highlighting one advantage of non-lexical lifetimes can be viewed in Listings X and Y.
+
+\Begin{minipage}{.475\textwidth}
+```{caption="Lexical lifetimes. Both a and b's lifetimes ends when going out of scope. Since their lifetimes overlap, a.push(9) results in an error."}
+fn main() {           //  'a
+  let mut a = vec![]; // <-+
+  a.push(1);          //   |
+  a.push(2);          //   |'b
+  let b = &a;         // <-+-+
+  foo(a);             //   | |
+  a.push(9); // ERROR //   | |
+}                     // <-+-+
+```
+\End{minipage}\hfill
+\Begin{minipage}{.475\textwidth}
+```{caption="Non-lexical lifetimes. No error occurs since b's lifetime ends earlier, i.e., when it will no longer be used."}
+fn main() {           //  'a
+  let mut a = vec![]; // <-+
+  a.push(1);          //   |
+  a.push(2);          //   |'b
+  let b = &a;         // <-+-+
+  foo(b);             // <-+-+
+  a.push(9); // OK    //   |
+}                     // <-+
+```
+\End{minipage}
 
 ### Mutable aliasing
 
-Ownership can in some cases be too restrictive, specifically when trying to implement graph-like data structures. For example, implementing doubly-linked lists, where each node has a mutable alias of its successor and predecessor is difficult with ownership. There are in general two ways to achieve mutable aliasing. The first way is to use a reference counter (`Rc<T>`) together with interior mutability (`RefCell<T>`). The reference counter, i.e., smart pointer, allows an object to be immutably owned by multiple variables simultaneously. An object's reference counter is incremented whenever a new ownership binding is made, and decremented when one is released. If the counter reaches zero, the object is de-allocated. Interior mutability lets an object be mutated even when there exists immutable references to it. It works by wrapping an object inside a `RefCell`. Variables with a mutable or immutable reference to the `RefCell` can then mutably borrow the wrapped object. By combining reference counting with interior mutability, i.e., `Rc<RefCell<T>>`, multiple variables can own the `RefCell` immutably, and are able to mutably borrow the object inside.
+Ownership can in some cases be too restrictive, specifically when trying to implement graph-like data structures. For instance, implementing doubly-linked lists, where each node has a mutable alias of its successor and predecessor is difficult. There are in general two ways to achieve mutable aliasing. The first way is to use a reference counter (`Rc<T>`) together with interior mutability (`RefCell<T>`). The reference counter, i.e., smart pointer, allows an object to be immutably owned by multiple variables simultaneously. An object's reference counter is incremented whenever a new ownership binding is made, and decremented when one is released. If the counter reaches zero, the object is de-allocated. Interior mutability lets an object be mutated even when there exists immutable references to it. It works by wrapping an object inside a `RefCell`. Variables with a mutable or immutable reference to the `RefCell` can then mutably borrow the wrapped object. By combining reference counting with interior mutability, i.e., `Rc<RefCell<T>>`, multiple variables can own the `RefCell` immutably, and are able to mutably borrow the object inside.
 
 The other way of achieving mutable aliasing is through unsafe blocks. Unsafe blocks are blocks of code wherein raw pointers can be dereferenced. Raw pointers are equivalent to C-pointers, i.e., pointers without any safety guarantees. Multiple raw pointers can point to the same memory address. The compiler cannot verify the static safety of unsafe blocks. Therefore, code inside these blocks have the potential to cause segmentation faults or other undefined behavior, and should be written with caution. While Rust is safe without using unsafe operations, many Rust libraries, including the standard library, use unsafe operations. RustBelt is an extension to Rust which verifies the soundness of unsafe blocks. It builds a semantic model of the language which is then verified against typing rules. A Rust program with well-typed unsafe blocks should not express any undefined behavior.
 
 ### Use cases
 
-Rust might not be the ideal prototyping language, since ownership imposes another layer of semantic complexity to the programmer. Albeit the restrictiveness, ownership can solve complex security concerns such as Software Fault Isolation (SFI) and Static Information Control (IFC).
+Rust might not be the ideal prototyping language, since ownership imposes another layer of semantic complexity to the programmer [@SFI_IFC]. Ownership can however solve complex security concerns such as Software Fault Isolation (SFI) and Static Information Control (IFC).
 
 SFI enforces safe boundaries between software modules. A module should not be able to access the another module's data without permission. As an example, C can violate SFI since a pointer in one module can access another module's heap space. In contrast, Rust's ownership policy ensures that an object in memory is by default accessible through one pointer. Ownership, and information, can be transferred securely between modules without violating SFI.
 
 IFC enforces confidentiality by tracing information routes of private confidential data. This becomes very complex in languages such as C where aliasing can explode the number of information routes. Meanwhile, IFC is easier in Rust due to its aliasing restrictions.
-
-### Semantics
-
-Rust's semantics consist of statements
 
 ## Code generation
 
@@ -273,7 +285,7 @@ Rust's semantics consist of statements
 
 ### Transpilers
 
-## Domain Specific Languages (DSL)
+### Domain Specific Languages (DSL)
 
 <!--What are Domain Specific Languages?--> Domain Specific Languages (*DSLs*) are small languages suited to interfacing with a specific problem domain [@FoldingDSL]. DSLs often act as a complement to General Purpose Languages (*GPLs*). GPLs are in contrast to DSLs designed for a wide variety of problem domains. Since GPLs are Turing complete, anything that can be programmed in a DSL can also be programmed in a GPL. The opposite may not apply. Using DSLs can lighten the burden of solving specific problems. For example, SQL is a convenient DSL for writing search queries on relational data. By being restricted to a certain problem domain, DSLs are can offer high level abstractions without sacrificing performance. DSLs are also capable of aggressive domain-specific optimizations.
 
@@ -283,21 +295,19 @@ Rust's semantics consist of statements
 
 <!--Tradeoffs--> Deep embeddings are flexible in adding new interpretations, but inflexible in adding new constructs. Adding a new construct requires revising all interpretations. It is the opposite for shallow embeddings where the semantic domain is fixed. There is only one interpretation, and changing it necessitates updating all constructs.
 
-### The expression problem
+### The Expression Problem
 
-The tradeoff between shallow and deep embeddings is recognized as the expression problem [@FoldingDSL]. When implementing an embedded DSL, one can modularize by either constructs or interpretations. The expression problem is best explained with an example [@ExpressionProblem]. Consider a language with two constructs: `Add` and `Num`, and two interpretations: `Eval` and `Emit`. Both `Add` and `Num` are expressions. `Num` represents a number literal. `Add` takes two expressions and adds them together. `Eval` evaluates an AST of `Add` and `Num` constructs into a numerical value, whereas `Emit` generates a string representing the arithmetic expression.
+The tradeoff between shallow and deep embeddings is recognized as the *expression problem* [@FoldingDSL]. When implementing an embedded DSL, one can modularize by either constructs or interpretations. The expression problem is best explained with an example [@ExpressionProblem].
+
+Consider a language with two constructs: `Add` and `Num`, and two interpretations: `Eval` and `Emit`. Both `Add` and `Num` are expressions. `Num` represents a number literal. `Add` takes two expressions and adds them together. `Eval` evaluates an AST of `Add` and `Num` constructs into a numerical value, whereas `Emit` generates a string representing the arithmetic expression.
 
 There are two general approaches to implementing this language: an object oriented approach and a functional approach, see Fig {@fig:ExpressionProblem}. The object oriented approach is to modularize by constructs. `Add` and `Num` are classes which both implement `Eval` and `Emit` as methods. The functional approach is to modularize by interpretations. `Eval` and `Emit` are functions which both implement how to handle arguments of type `Add` and `Num`. Both approaches are imperfect. In the former, new constructs can be added by creating a new module, but adding a new interpretations requires changing all existing modules. The opposite applies for the latter.
 
-![Object oriented approach (left) and functional approach (right) to the expression problem](ExpressionProblem.png){#fig:ExpressionProblem}
+![Expression problem: Object oriented approach (left) and functional approach (right)](ExpressionProblem.png){#fig:ExpressionProblem short-caption="Expression problem"}
 
 [@Finally Tagless, Partially Evaluated]
 
 Another approach is the Finally Tagless technique which builds on *typeclasses*. It uses an interface to abstract over all interpretations. The interface can be implemented to create different concrete interpretations. New constructs and interpretations can be added with ease. Constructs are added by supplementing the interface with new methods. Interpretations are added by creating new instances of the interface.
-
-## External DSL
-
-## Embedded DSL
 
 ## The Scala Programming Language v2.12.4
 
@@ -316,12 +326,6 @@ Regex - non-recursive
 ### Lightweight Modular Staging (LMS)
 
 ### Delite
-
-## Apache Flink
-
-## Bottlenecks
-
-## Hardware acceleration
 
 # Design
 
@@ -385,14 +389,4 @@ implicit def EvalAdd[A <: Exp, B <: Exp]
 
 # Conclusion
 
-
-# Rest
-
-### Scalability
-
-<!--There are two general approaches to scaling a distributed system: scaling up and scaling out [@Scale-up x Scale-out: A Case Study using Nutch/Lucene]. Scaling up involves modifying existing machines to make them more powerful. This can be expensive, but also effective as it is almost guaranteed to improve performance. Scaling out instead adds new machines to the network rather than modifying existing ones. It can be cheaper since the new machines do not have to be more powerful. Although, this approach leads to rise in data center bills and power consumption [@Flare], which can be expensive. Another downside of scaling up is the performance loss due to the increase in network communication and coordination for each machine added.-->
-
-<!--The CDA system, like other distributed systems, will distribute its workers over multiple machines. Multiple workers may execute in parallel on the same machine. Workers expect to have exclusive access to their machine's low level hardware resources. With virtualization, it becomes easier to distribute these resources among workers executing concurrently on the same machine. Virtualization software prevents resource conflicts between operative systems. -->
-
-<!--[@https://superuser.com/questions/333297/is-it-possible-to-dual-boot-two-oss-at-the-same-time]-->
-https://cloud.google.com/tpu/
+Expression precedence
