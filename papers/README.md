@@ -1,5 +1,4 @@
 ```
-
 | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FINISHED ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ |
 | Shallow Embedding of DSLs via Online Partial Evaluation                              |
 | Apache Flink: Stream and Batch Processing in a Single Engine                         |
