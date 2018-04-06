@@ -51,3 +51,10 @@ Subtype polymorphism
 Parametric polymorphism
 Ad-hoc polymorphism
 And that’s what’s really cool about typeclasses. We can add new functionality to old code without modifying it.
+
+# Other
+
+Higher kinded types = Type constructors
+Curried type constructors
+Kind projector
+Type erasure
