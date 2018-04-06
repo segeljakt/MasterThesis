@@ -5,6 +5,7 @@ subtitle: Master Thesis
 fontsize: 12pt
 author:
   - Klas Segeljakt \<klasseg@kth.se\>
+geometry: margin=2.54cm
 toc: yes
 lot: yes
 lof: yes
