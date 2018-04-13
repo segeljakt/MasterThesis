@@ -179,6 +179,18 @@ NoSQL is a new series of high performance data management systems for Big Data a
 
 Most of Cassandra's logic stays the same in ScyllaDB. Although, one notable difference is their caching mechanisms. Caching reduces the disk seeks of read operations. This helps decrease the I/O load which can be a major bottleneck in distributed storage systems. Cassandra's cache is static while ScyllaDB's cache is dynamic. ScyllaDB will allocate all available memory to its cache and dynamically evict entries whenever other tasks require more memory. Cassandra does not have this control since memory is managed by the JVM garbage collector. In evaluation, ScyllaDB's caching strategy improved the reading performance by less cache misses, but also had a negative impact on write performance.
 
+### Rain https://github.com/substantic/rain
+
+Rain is an open source distributed computational framework, with a core written in Rust and an API written in Python. Rain aims to lower the entry barrier to the field of distributed computing by being portable, scalable and easy to use.Computation is defined as a task-based pipeline through dataflow programming. Tasks are coordinated by a server, and executed by workers which communicate over direct connections. Workers may also spawn subworkers as local processes. Tasks are either BIFs or UDFs. UDFs can execute Python code, and can make calls to external applications. Support for running tasks as plain C code, without having to link against Rain, is on the roadmap.
+
+### Apache Arrow https://arrow.apache.org
+
+Systems and libraries like Spark, Cassandra, and Pandas have their own internal memory format. When transferring data from one system to another, about 70-80% of the time is wasted on serialization and deserialization. Apache Arrow eliminates this overhead through a common in-memory data layer. Data is stored in a columnar format for locality which maps well to SIMD operations. Arrow is available as a cross-language framework for Java, C, C++, Python, JavaScript, and Ruby. It is currently supported by 13 large open source projects, including Spark, Cassandra, Pandas, Hadoop, and Spark.
+
+### DataFusion https://www.datafusion.rs
+
+DataFusion is a distributed computational platform, serving as a proof-of-concept for what Spark could be if it were to be implemented in Rust. Spark's scalability and performance is challenged by the overhead of garbage collection and Java object serialization. While Tungsten addresses these issues by storing data off-heap, the issues could be avoided altogether by transitioning away from the JVM. DataFusion provides functionality which is similar to Spark's SQL's DataFrame API, and takes advantage of the Apache Arrow memory format. DataFusion outperforms Apache Spark for small datasets, and is still several times faster than Spark when computation gets I/O bound. In addition, DataFusion uses less memory, and does not suffer from unforeseen garbage collection pauses or OutOfMemory exceptions.
+
 ### Voodoo
 
 Voodoo is a code generation framework which has been applied as the backend for MonetDB [@Voodoo]. MonetDB is a high performance query processing engine. Voodoo provides a declarative intermediate algebra which abstracts away details of the underlying hardware. It is able to express advanced programming techniques such as cache conscious processing in few lines of code. The output is optimized OpenCL code.
@@ -191,7 +203,7 @@ When generating code, Voodoo assigns an Extent and Intent value to each code fra
 
 ## Delimitations
 
-<!--What was intentionally left out?--> Only Rust will be used as the target language for code generation. It would be interesting to compare its performance to C and C++, but this is out of scope for this thesis. Moreover, the code generator will support most, but not all, of Rust's features. Instead, the focus is to develop an extensible code-generation framework. Static semantic checking for ownership will be left out since Rust's ownership policy will be changed in the near future to use non-lexical lifetimes.
+<!--What was intentionally left out?--> Only Rust will be used as the target language for code generation. It would be interesting to compare its performance to C and C++, but this is out of scope for this thesis. In addition, the code generator will support most, but not all, of Rust's features. Instead, the focus is to develop an extensible code-generation framework. Static semantic checking for ownership will be left out since Rust's ownership policy will be changed in the near future to use non-lexical lifetimes.
 
 ## Outline
 
@@ -229,11 +241,13 @@ Since Rust's original release, it has seen multiple major revisions. Dropped fea
 
 ### Syntax
 
-Rust's syntax consists of *expressions* and *statements*. Expressions always evaluate to a value, and can have side effects. Unlike C, Rust's control flow constructs, e.g., loops and if-else, can be *side-effect* free. For instance, loops can return a value. Statements are divided into two categories: *declaration statements* and *expression statements*. A declaration statement introduces a new name, for a variable or item, into a namespace. Variables are by default declared immutable, and are visible until end of scope. Items are components, e.g., enums, structs and functions, belonging to a crate. Expression statements are expressions which ignore the result, and as a result only have side-effects. All statements and expressions can have 
+Rust's syntax consists of *expressions* and *statements*. Expressions always evaluate to a value and may contain operands, i.e., sub-expressions. Unlike C, Rust's control flow constructs are expressions, and can thereby be *side-effect* free. For instance, loops can return a value through the break statement. Expressions branch into two categories: *place expressions* and *value expressions*. [@https://doc.rust-lang.org/reference/expressions.html#place-expressions-and-value-expressions ] Place expressions represent a memory location, e.g., an array indexing operation, field access operation, or dereference operation. Place expressions may only be assigned to Value expressions instead represent an actual value, e.g., a binary operation, or function call. Place and value expressions are commonly referred to as *lvalues* and *rvalues* respectively.
+
+Statements are divided into two categories: *declaration statements* and *expression statements*. A declaration statement introduces a new name for a variable or item into a namespace. Variables are by default declared immutable, and are visible until end of scope. Items are components, e.g., enums, structs and functions, belonging to a crate. Expression statements are expressions which ignore the result, and as a result only produce side-effects. All statements and expressions can have 
 
 ### Ownership
 
-In Rust, when a variable is bound to an object, it takes ownership of that object. Ownership can be transferred to a new variable, which in consequence breaks the original binding. Variables can temporarily borrow ownership of an object without breaking the binding. An object can be either mutably borrowed by at most one variable, or immutably borrowed by any number of variables. Thus, objects cannot be mutably and immutably borrowed at the same time.
+When a variable in Rust is bound to an object, it takes ownership of that object. Ownership can be transferred to a new variable, which in consequence breaks the original binding. Variables can also temporarily borrow ownership of an object without breaking the binding. An object can be either mutably borrowed by at most one variable, or immutably borrowed by any number of variables. Thus, objects cannot be mutably and immutably borrowed at the same time.
 
 By restricting aliasing, Rust solves many safety issues found in other low level languages, such as double-free errors, i.e., freeing the same memory address twice. Moreover, Rust eliminates the risk of data-races as ownership applies across threads. Although Rust is not the first language to adopt ownership, previous languages featuring the concept were either too verbose or restrictive [@RustBelt].
 
@@ -280,6 +294,16 @@ SFI enforces safe boundaries between software modules. A module should not be ab
 
 IFC enforces confidentiality by tracing information routes of private confidential data. This becomes very complex in languages such as C where aliasing can explode the number of information routes. Meanwhile, IFC is easier in Rust due to its aliasing restrictions.
 
+### The Rust compilers
+
+Compilers 
+Rust's primary compiler is *rustc*, which uses LLVM as its backend [@https://rust-lang-nursery.github.io/rustc-guide/high-level-overview.html]. Cretonne a project aiming to addis another compiler Other compilerRustc uses LLVM as its backend. The general steps *rustc* must take to translate source code into machine code are listed in [@tableX].
+
+
+
+
+https://github.com/Cretonne/cretonne
+
 ## Code generation
 
 * Generate binary directly, or generate Rust and compile?
@@ -318,15 +342,57 @@ Scala is a high level object-oriented and functional programming language. It co
 
 Scala version 2.10 introduced macros. Macros enable compile-time metaprogramming. They have many uses, including boilerplate code generation, language virtualization and programming of embedded DSLs. Macros in Scala are invoked during compilation and are provided with a context of the program. The context can be accessed with an API, providing methods for parsing, type-checking and error reporting. This enables macros to generate context-dependent code. Scala provides multiple types of macros: def macros, dynamic macros, string interpolation macros, implicit macros, type macros and macro annotations.
 
-### Parser Combinators
+### Shapeless
 
-### Parser Generators
+Native Scala does not support first-class polymorphic function values [@http://milessabin.com/blog/2012/04/27/shapeless-polymorphic-function-values-1/]. Function values can be polymorphic with respect to either arity or types, but not both. Hence, a Scala function can either take a fixed set of first-class generic type parameters (listing [@X]), or a list of parameters with a second-class generic type bound (listing [@Y]).
 
-Regex - non-recursive
+```{.scala caption="Type polymorphism."}
+def foo[A,B,C](a: A, b: B, c: C)
+```
 
-### Lightweight Modular Staging (LMS)
+```{.scala caption="Arity polymorphism."}
+def bar[T](l: List[T])
+```
 
-### Delite
+Shapeless is a library for generic programming which solves this tradeoff [@https://www.scala-exercises.org/shapeless/polymorphic_function_values, @shapeless-guide.pdf]. The core feature of Shapeless is heterogeneous lists (HLists). A HList is a List where the type of each element is statically known at compile time [@https://jto.github.io/articles/getting-started-with-shapeless/]. Compared to tuples, HLists are able to abstract over arity and support Scala's List operations, e.g., map and zip. Functions which accept HLists as parameters retain both arity and type information, and thereby become polymorphic.
+
+```{.scala caption="Type and arity polymorphism."}
+// An HList
+val x = 3 :: "abc" :: 'o' :: HNil
+
+// A polymorphic function
+def f[T <: HList](l: T)
+```
+
+### String Interpolation
+
+String literals in Scala can be written either as single-line or multi-line [LearningScala, ProgrammingScala]. The latter is effective for language embedding, as one can then write code on multiple lines inside of a string literal.
+
+Another feature is string interpolation which lets the user annotate that a set of rules should be applied to a string literal. In Fig X, the `s` string interpolation method inserts an external value into the string. String interpolation desugars the string literal into a `StringContext`, and invokes the string interpolation method on it. External values and variables are passed as arguments to the method call. Custom string interpolation methods can be injected into the `StringContext` class through implicit classes.
+[@https://docs.scala-lang.org/overviews/quasiquotes/intro.html]
+
+```{.scala caption="String interpolation"}
+val x = "world"
+val y = s"Hello $x!" // Equivalent to `new StringContext("Hello ", "!").s(x)`
+println(y) // Hello world!
+```
+
+Scala has a set of advanced string interpolation methods for parsing Scala code, referred to as quasi-quotes. Quasi-quotes take a string literal containing code and generates a corresponding abstract syntax tree. Scala's standard library only has quasi-quotes for Scala code. To add support for Rust quasi-quotes, one would need to construct a lexer and parser for Rust.
+
+### Language Injection
+
+Language Injection is a feature provided in the IntelliJ IDEA editor for metaprogramming. It enables injecting syntax highlighting and linting for a programming language into a string literal, e.g., HTML, CSS, SQL, RegExp [@https://www.jetbrains.com/help/idea/using-language-injections.html]. Language Injection can be enabled manually through the IntelliJ interface, or by annotating the string literals. The `IntelliJ Rust` plugin can be installed to add support for Rust Language Injection [@https://intellij-rust.github.io]. In Fig X, Rust Language Injection for a Scala string literal is enabled by adding a comment annotation on the line preceding the string literal.
+
+```scala
+// language=Rust
+"""
+fn main() {
+  println("Hello world");
+}
+""" 
+```
+
+
 
 # Design
 
