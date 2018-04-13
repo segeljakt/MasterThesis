@@ -51,7 +51,6 @@ def hello = println("hello")
 hello
 ```
 
-
 ## Type system
 
 All values in Scala have a type. Types come in different forms.

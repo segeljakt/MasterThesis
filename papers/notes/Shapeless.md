@@ -10,7 +10,7 @@ def f[A,B,C](a: A, b: B, c: C)
 def f[T](l: List[T])
 ```
 
-Shapeless is a library for generic programming which can be used to solve this tradeoff [@https://www.scala-exercises.org/shapeless/polymorphic_function_values, @shapeless-guide.pdf]. The core feature of Shapeless is heterogeneous lists (HLists). A HList is a List where the type of each element is statically known at compile time [@https://jto.github.io/articles/getting-started-with-shapeless/]. Compared to tuples, HLists are able to abstract over arity and support Scala's List operations, e.g., map and zip. Functions which accept HLists as parameters retain both arity and type information, and thereby become polymorphic. If desired, element types in HLists can be restricted with type bounds.Elements in HLists can be restricted with lower and upper type bounds.
+Shapeless is a library for generic programming which can be used to solve this tradeoff [@https://www.scala-exercises.org/shapeless/polymorphic_function_values, @shapeless-guide.pdf]. The core feature of Shapeless is heterogeneous lists (HLists). A HList is a List where the type of each element is statically known at compile time [@https://jto.github.io/articles/getting-started-with-shapeless/]. Compared to tuples, HLists are able to abstract over arity and support Scala's List operations, e.g., map and zip. Functions which accept HLists as parameters retain both arity and type information, and thereby become polymorphic.
 
 
 ```{.scala caption=""}
@@ -85,15 +85,18 @@ isb.select[String]
 
 # Generic representation of case classes
 
+## Generic[T]: Convert to and from case class T
 ```
 case class Foo(i: Int, c: Char)
 
 val foo = Foo(1, 'c')
 
-val fooHList = Generic[Foo].to(foo)
+val fooHList = Generic[Foo].to(foo) // Convert from Foo to HList
 
-val foo2 = Generic[Foo].from(fooHList)
+val foo2 = Generic[Foo].from(fooHList) // Convert from HList to Foo
 ```
+
+## FnToProduct[T]: Convert 
 
 # Lenses
 
