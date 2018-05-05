@@ -15,4 +15,4 @@
 ## Plan for next week
 
 * Implementation: Re-implement structs on top of records from the Shapeless library. This will decrease the verbosity of DSL code by a great deal.
-* Report: Re
+* Report: Keep on writing.
