@@ -1,0 +1,20 @@
+struct Rectangle<T> {
+width: T,
+height: T,
+}
+trait Geometry<T> {
+fn perimeter(&self) -> T; }
+impl<T: Add<Output=T>+Copy> Geometry<T> for Rectangle<T> { fn perimeter(&self) -> T {
+self.width + self.width + self.height + self.height }
+}
+fn main() {
+let calc = |kind: &str, v: &[i32]| {
+let shape = match kind {
+"Rectangle" => Shape::Rectangle(Rectangle{ width: v[0], height: v[1] }), "Triangle" => Shape::Triangle(Triangle( v[0], v[1], v[2])),
+_ => std::process::exit(-1)
+};
+      println!("Perimeter of {} is {}", kind, shape.perimeter());
+    };
+calc("Rectangle", &[5,7]); // Perimeter of Rectangle is 24
+calc("Triangle", &[3,3,3]); // Perimeter of Triangle is 9
+}

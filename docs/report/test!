@@ -1,0 +1,18 @@
+struct Rectangle<T> {
+    width: T,
+    height: T,
+}
+trait Geometry<T> {
+    fn perimeter(&self) -> T;
+}
+impl<T: Add<Output = T> + Copy> Geometry<T> for Rectangle<T> {
+    fn perimeter(&self) -> T {
+        self.width + self.width + self.height + self.height
+    }
+}
+fn main() {
+    let w: i32 = 3;
+    let h: i32 = 5;
+    let r = Rectangle { w, h };
+    println("{}", r.perimeter);
+}

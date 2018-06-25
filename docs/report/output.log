@@ -1,0 +1,980 @@
+FUNCTION  ale#util#ClockMilliseconds()
+Called 66 times
+Total time:   0.001332
+ Self time:   0.001332
+
+count  total (s)   self (s)
+   66              0.001208     return float2nr(reltimefloat(reltime()) * 1000)
+
+FUNCTION  ale#cursor#EchoCursorWarningWithDelay()
+Called 140 times
+Total time:   0.015291
+ Self time:   0.008317
+
+count  total (s)   self (s)
+  140              0.000300     if !g:ale_echo_cursor
+                                    return
+                                endif
+                            
+                                " Only echo the warnings in normal mode, otherwise we will get problems.
+  140              0.000613     if mode() isnot# 'n'
+                                    return
+                                endif
+                            
+  140   0.002618   0.000870     call s:StopCursorTimer()
+                            
+  140              0.001222     let l:pos = getcurpos()[0:2]
+                            
+                                " Check the current buffer, line, and column number against the last
+                                " recorded position. If the position has actually changed, *then*
+                                " we should echo something. Otherwise we can end up doing processing
+                                " the echo message far too frequently.
+  140              0.000417     if l:pos != s:last_pos
+  140   0.006499   0.001273         let l:delay = ale#Var(bufnr(''), 'echo_delay')
+                            
+  140              0.000456         let s:last_pos = l:pos
+  140              0.001070         let s:cursor_timer = timer_start(   l:delay,   function('ale#cursor#EchoCursorWarning'))
+  140              0.000142     endif
+
+FUNCTION  ale#FileTooLarge()
+Called 66 times
+Total time:   0.006627
+ Self time:   0.002358
+
+count  total (s)   self (s)
+   66              0.000577     if !exists('g:ale_maximum_file_size')
+                                    return 0
+                                endif
+                            
+   66   0.005136   0.000867     let l:max = ale#Var(bufnr(''), 'maximum_file_size')
+                            
+   66              0.000451     return l:max > 0 ? (line2byte(line('$') + 1) > l:max) : 0
+
+FUNCTION  pandoc#folding#FoldText()
+Called 11 times
+Total time:   0.000832
+ Self time:   0.000696
+
+count  total (s)   self (s)
+                                " first line of the fold
+   11              0.000043     let f_line = getline(v:foldstart)
+                                " second line of the fold
+   11              0.000035     let n_line = getline(v:foldstart + 1)
+                                " count of lines in the fold
+   11              0.000032     let line_count = v:foldend - v:foldstart + 1
+   11              0.000036     let line_count_text = " / " . line_count . " lines / "
+                            
+   11              0.000051     if n_line =~ 'title\s*:'
+                                    return v:folddashes . " [y] " . matchstr(n_line, '\(title\s*:\s*\)\@<=\S.*') . line_count_text
+                                endif
+   11              0.000041     if f_line =~ "fold-begin"
+                                    return v:folddashes . " [c] " . matchstr(f_line, '\(<!-- \)\@<=.*\( fold-begin -->\)\@=') . line_count_text
+                                endif
+   11              0.000036     if f_line =~ "<!-- .*{{{"
+                                    return v:folddashes . " [m] " . matchstr(f_line, '\(<!-- \)\@<=.*\( {{{.* -->\)\@=') . line_count_text
+                                endif
+   11              0.000040     if f_line =~ "<div class="
+                                    return v:folddashes . " [". matchstr(f_line, "\\(class=[\"']\\)\\@<=.*[\"']\\@="). "] " . n_line[:30] . "..." . line_count_text
+                                endif
+   11              0.000100     if &ft =~ "markdown" || &ft == "pandoc" || &ft == "rmd"
+   11   0.000201   0.000065         return pandoc#folding#MarkdownFoldText() . line_count_text
+                                elseif &ft == "textile"
+                                    return pandoc#folding#TextileFoldText() . line_count_text
+                                endif
+
+FUNCTION  <SNR>264_FindItemAtCursor()
+Called 66 times
+Total time:   0.004643
+ Self time:   0.003305
+
+count  total (s)   self (s)
+   66              0.000368     let l:buf = bufnr('')
+   66              0.000516     let l:info = get(g:ale_buffer_info, l:buf, {})
+   66              0.000389     let l:loclist = get(l:info, 'loclist', [])
+   66              0.000323     let l:pos = getcurpos()
+   66   0.002183   0.000845     let l:index = ale#util#BinarySearch(l:loclist, l:buf, l:pos[1], l:pos[2])
+   66              0.000341     let l:loc = l:index >= 0 ? l:loclist[l:index] : {}
+                            
+   66              0.000218     return [l:info, l:loc]
+
+FUNCTION  pandoc#folding#MarkdownFoldText()
+Called 11 times
+Total time:   0.000136
+ Self time:   0.000136
+
+count  total (s)   self (s)
+   11              0.000034     let c_line = getline(v:foldstart)
+   11              0.000059     let atx_title = match(c_line, '#') > -1
+   11              0.000013     if atx_title
+   11              0.000021         return "- ". c_line
+                                else
+                                    if match(getline(v:foldstart+1), '=') != -1
+                                        let level_mark = '#'
+                                    else
+                                        let level_mark = '##'
+                                    endif
+                                    return "- ". level_mark. ' '.c_line
+                                endif
+
+FUNCTION  <SNR>159_CurrentTimeStr()
+Called 1 time
+Total time:   0.000035
+ Self time:   0.000035
+
+count  total (s)   self (s)
+    1              0.000003         if s:has_reltime
+    1              0.000029             return split(reltimestr(reltime()))[0]
+                                    endif
+                                    return s:n2s(localtime())
+
+FUNCTION  LightlineReadonly()
+Called 222 times
+Total time:   0.000654
+ Self time:   0.000654
+
+count  total (s)   self (s)
+  222              0.000535   return &readonly ? '' : ''
+
+FUNCTION  <SNR>197_clear_matches()
+Called 140 times
+Total time:   0.001672
+ Self time:   0.001672
+
+count  total (s)   self (s)
+  140              0.001054 	call map(get(w:, 'css_color_match_id', []), 'matchdelete(v:val)')
+  140              0.000466 	let w:css_color_match_id = []
+
+FUNCTION  <SNR>159_GetLastHeartbeat()
+Called 140 times
+Total time:   0.004268
+ Self time:   0.004268
+
+count  total (s)   self (s)
+  140              0.001129         if !s:last_heartbeat.last_activity_at || localtime() - s:last_heartbeat.last_activity_at > s:local_cache_expire
+    2              0.000065             if !filereadable(s:data_file)
+                                            return {'last_activity_at': 0, 'last_heartbeat_at': 0, 'file': ''}
+                                        endif
+    2              0.000093             let last = readfile(s:data_file, '', 3)
+    2              0.000009             if len(last) == 3
+    2              0.000013                 let s:last_heartbeat.last_heartbeat_at = last[1]
+    2              0.000008                 let s:last_heartbeat.file = last[2]
+    2              0.000002             endif
+    2              0.000002         endif
+  140              0.000247         return s:last_heartbeat
+
+FUNCTION  ale#ShouldDoNothing()
+Called 66 times
+Total time:   0.021352
+ Self time:   0.012881
+
+count  total (s)   self (s)
+                                " The checks are split into separate if statements to make it possible to
+                                " profile each check individually with Vim's profiling tools.
+                            
+                                " Do nothing if ALE is disabled.
+   66              0.001236     if !getbufvar(a:buffer, 'ale_enabled', get(g:, 'ale_enabled', 0))
+                                    return 1
+                                endif
+                            
+                                " Don't perform any checks when newer NeoVim versions are exiting.
+   66              0.000832     if get(v:, 'exiting', v:null) isnot v:null
+                                    return 1
+                                endif
+                            
+                                " Do nothing for blacklisted files
+   66              0.001408     if index(get(g:, 'ale_filetype_blacklist', []), getbufvar(a:buffer, '&filetype')) >= 0
+                                    return 1
+                                endif
+                            
+                                " Do nothing if running from command mode
+   66              0.000538     if s:getcmdwintype_exists && !empty(getcmdwintype())
+                                    return 1
+                                endif
+                            
+   66              0.000981     let l:filename = fnamemodify(bufname(a:buffer), ':t')
+                            
+   66              0.000243     if l:filename is# '.'
+                                    return 1
+                                endif
+                            
+                                " Do nothing if running in the sandbox
+   66   0.002456   0.000612     if ale#util#InSandbox()
+                                    return 1
+                                endif
+                            
+                                " Do nothing if the file is too large.
+   66   0.007077   0.000450     if ale#FileTooLarge()
+                                    return 1
+                                endif
+                            
+                                " Do nothing from CtrlP buffers with CtrlP-funky.
+   66              0.002456     if exists(':CtrlPFunky') is 2&& getbufvar(a:buffer, '&l:statusline') =~# 'CtrlPMode.*funky'
+                                    return 1
+                                endif
+                            
+   66              0.000166     return 0
+
+FUNCTION  <SNR>197_parse_screen()
+Called 140 times
+Total time:   0.922282
+ Self time:   0.919079
+
+count  total (s)   self (s)
+  140              0.001011 	let leftcol = winsaveview().leftcol
+  140              0.000685 	let left = max([ leftcol - 15, 0 ])
+  140              0.000353 	let width = &columns * 4
+  140              0.915285 	call filter( range( line('w0'), line('w$') ), 'substitute( strpart( getline(v:val), col([v:val, left]), width ), b:css_color_pat, ''\=s:create_syn_match()'', ''g'' )' )
+  140   0.004584   0.001381 	call s:create_matches()
+
+FUNCTION  <SNR>197_create_matches()
+Called 140 times
+Total time:   0.003203
+ Self time:   0.001531
+
+count  total (s)   self (s)
+  140   0.002434   0.000762 	call s:clear_matches()
+  140              0.000587 	if ! &l:cursorline | return | endif
+                            	" adds matches based that duplicate the highlighted colors on the current line
+                            	let lnr = line('.')
+                            	let group = ''
+                            	let groupstart = 0
+                            	let endcol = col('$')
+                            	for col in range( 1, endcol )
+                            		let nextgroup = col < endcol ? synIDattr( synID( lnr, col, 1 ), 'name' ) : ''
+                            		if group == nextgroup | continue | endif
+                            		if group =~ '^BG\x\{6}$'
+                            			let regex = '\%'.lnr.'l\%'.groupstart.'c'.repeat( '.', col - groupstart )
+                            			let w:css_color_match_id += [ matchadd( group, regex, -1 ) ]
+                            		endif
+                            		let group = nextgroup
+                            		let groupstart = col
+                            	endfor
+
+FUNCTION  <SNR>159_EnoughTimePassed()
+Called 140 times
+Total time:   0.001670
+ Self time:   0.001670
+
+count  total (s)   self (s)
+  140              0.000440         let prev = a:last.last_heartbeat_at
+  140              0.000521         if a:now - prev > g:wakatime_HeartbeatFrequency * 60
+    1              0.000002             return s:true
+                                    endif
+  139              0.000204         return s:false
+
+FUNCTION  <SNR>159_SetLastHeartbeat()
+Called 1 time
+Total time:   0.000630
+ Self time:   0.000587
+
+count  total (s)   self (s)
+    1   0.000036   0.000023         call s:SetLastHeartbeatInMemory(a:last_activity_at, a:last_heartbeat_at, a:file)
+    1   0.000594   0.000564         call writefile([s:n2s(a:last_activity_at), s:n2s(a:last_heartbeat_at), a:file], s:data_file)
+
+FUNCTION  <SNR>159_SendHeartbeats()
+Called 2 times
+Total time:   0.003554
+ Self time:   0.002528
+
+count  total (s)   self (s)
+    2              0.000011         let start_time = localtime()
+    2              0.000004         let stdout = ''
+                            
+    2              0.000007         if len(s:heartbeats_buffer) == 0
+    1              0.000002             let s:last_sent = start_time
+    1              0.000001             return
+                                    endif
+                            
+    1              0.000006         let heartbeat = s:heartbeats_buffer[0]
+    1              0.000007         let s:heartbeats_buffer = s:heartbeats_buffer[1:-1]
+    1              0.000004         if len(s:heartbeats_buffer) > 0
+                                        let extra_heartbeats = s:GetHeartbeatsJson()
+                                    else
+    1              0.000004             let extra_heartbeats = ''
+    1              0.000001         endif
+                            
+    1   0.000484   0.000022         let python_bin = s:GetPythonBinary()
+    1              0.000007         let cmd = [python_bin, '-W', 'ignore', s:cli_location]
+    1              0.000012         let cmd = cmd + ['--entity', heartbeat.entity]
+    1              0.000011         let cmd = cmd + ['--time', heartbeat.time]
+    1   0.000083   0.000035         let cmd = cmd + ['--plugin', printf('vim/%s vim-wakatime/%s', s:n2s(v:version), s:VERSION)]
+    1              0.000004         if heartbeat.is_write
+                                        let cmd = cmd + ['--write']
+                                    endif
+    1              0.000006         if has_key(heartbeat, 'language')
+    1              0.000014             let cmd = cmd + ['--language', heartbeat.language]
+    1              0.000001         endif
+    1              0.000004         if extra_heartbeats != ''
+                                        let cmd = cmd + ['--extra-heartbeats']
+                                    endif
+                            
+                                    " overwrite shell
+    1              0.000012         let [sh, shellcmdflag, shrd] = [&shell, &shellcmdflag, &shellredir]
+    1   0.000028   0.000008         if !s:IsWindows()
+    1              0.000017             set shell=sh shellredir=>%s\ 2>&1
+    1              0.000002         endif
+                            
+    1              0.000003         if s:has_async
+    1   0.000024   0.000006             if s:IsWindows()
+                                            let job_cmd = [&shell, &shellcmdflag] + cmd
+                                        else
+    1   0.000503   0.000025                 let job_cmd = [&shell, &shellcmdflag, s:JoinArgs(cmd)]
+    1              0.000002             endif
+    1              0.001855             let job = job_start(job_cmd, { 'stoponexit': '', 'callback': {channel, output -> s:AsyncHandler(output, cmd)}})
+    1              0.000019             if extra_heartbeats != ''
+                                            let channel = job_getchannel(job)
+                                            call ch_sendraw(channel, extra_heartbeats . "\n")
+                                        endif
+    1              0.000002         elseif s:nvim_async
+                                        let s:nvim_async_output = ['']
+                                        let job = jobstart([&shell, &shellcmdflag, s:JoinArgs(cmd)], { 'detach': 1, 'on_stdout': function('s:NeovimAsyncOutputHandler'), 'on_stderr': function('s:NeovimAsyncOutputHandler'), 'on_exit': function('s:NeovimAsyncExitHandler')})
+                                        if extra_heartbeats != ''
+                                            call jobsend(job, extra_heartbeats . "\n")
+                                        endif
+                                    elseif s:IsWindows()
+                                        if s:is_debug_on
+                                            if extra_heartbeats != ''
+                                                let stdout = system('(' . s:JoinArgs(cmd) . ')', extra_heartbeats)
+                                            else
+                                                let stdout = system('(' . s:JoinArgs(cmd) . ')')
+                                            endif
+                                        else
+                                            exec 'silent !start /b cmd /c "' . s:JoinArgs(cmd) . ' > nul 2> nul"'
+                                        endif
+                                    else
+                                        if s:is_debug_on
+                                            if extra_heartbeats != ''
+                                                let stdout = system(s:JoinArgs(cmd), extra_heartbeats)
+                                            else
+                                                let stdout = system(s:JoinArgs(cmd))
+                                            endif
+                                        else
+                                            if extra_heartbeats != ''
+                                                let stdout = system(s:JoinArgs(cmd) . ' &', extra_heartbeats)
+                                            else
+                                                let stdout = system(s:JoinArgs(cmd) . ' &')
+                                            endif
+                                        endif
+                                    endif
+                            
+                                    " restore shell
+    1              0.000103         let [&shell, &shellcmdflag, &shellredir] = [sh, shellcmdflag, shrd]
+                            
+    1              0.000008         let s:last_sent = localtime()
+                            
+                                    " need to repaint in case a key was pressed while sending
+    1              0.000005         if !s:has_async && !s:nvim_async && s:redraw_setting != 'disabled'
+                                        if s:redraw_setting == 'auto'
+                                            if s:last_sent - start_time > 0
+                                                redraw!
+                                            endif
+                                        else
+                                            redraw!
+                                        endif
+                                    endif
+                            
+    1              0.000003         if s:is_debug_on && stdout != ''
+                                        echoerr '[WakaTime] Heartbeat Command: ' . s:JoinArgs(cmd) . "\n[WakaTime] Error: " . stdout
+                                    endif
+
+FUNCTION  ale#util#InSandbox()
+Called 66 times
+Total time:   0.001844
+ Self time:   0.001844
+
+count  total (s)   self (s)
+   66              0.000161     try
+   66              0.000504         function! s:SandboxCheck() abort
+                                    endfunction
+   66              0.000201     catch /^Vim\%((\a\+)\)\=:E48/
+                                    " E48 is the sandbox error.
+                                    return 1
+                                endtry
+                            
+   66              0.000110     return 0
+
+FUNCTION  ale#Var()
+Called 206 times
+Total time:   0.009495
+ Self time:   0.009495
+
+count  total (s)   self (s)
+  206              0.001221     let l:nr = str2nr(a:buffer)
+  206              0.000964     let l:full_name = 'ale_' . a:variable_name
+                            
+  206              0.000890     if bufexists(l:nr)
+  206              0.001061         let l:vars = getbufvar(l:nr, '')
+  206              0.000867     elseif has_key(g:, 'ale_fix_buffer_data')
+                                    let l:vars = get(g:ale_fix_buffer_data, l:nr, {'vars': {}}).vars
+                                else
+                                    let l:vars = {}
+                                endif
+                            
+  206              0.001441     return get(l:vars, l:full_name, g:[l:full_name])
+
+FUNCTION  lightline#link()
+Called 111 times
+Total time:   0.002326
+ Self time:   0.002326
+
+count  total (s)   self (s)
+  111              0.001446   let mode = get(s:lightline._mode_, a:0 ? a:1 : mode(), 'normal')
+  111              0.000431   if s:mode == mode
+  111              0.000198     return ''
+                              endif
+                              let s:mode = mode
+                              if !has_key(s:highlight, mode)
+                                call lightline#highlight(mode)
+                              endif
+                              let types = map(s:uniq(sort(filter(values(s:lightline.component_type), 'v:val !=# "raw"'))), '[v:val, 1]')
+                              for [p, l] in [['Left', len(s:lightline.active.left)], ['Right', len(s:lightline.active.right)]]
+                                for [i, t] in map(range(0, l), '[v:val, 0]') + types
+                                  if i != l
+                                    exec printf('hi link Lightline%s_active_%s Lightline%s_%s_%s', p, i, p, mode, i)
+                                  endif
+                                  for [j, s] in map(range(0, l), '[v:val, 0]') + types
+                                    if i + 1 == j || t || s && i != l
+                                      exec printf('hi link Lightline%s_active_%s_%s Lightline%s_%s_%s_%s', p, i, j, p, mode, i, j)
+                                    endif
+                                  endfor
+                                endfor
+                              endfor
+                              exec printf('hi link LightlineMiddle_active LightlineMiddle_%s', mode)
+                              return ''
+
+FUNCTION  ale#CallWithCooldown()
+Called 66 times
+Total time:   0.040938
+ Self time:   0.007074
+
+count  total (s)   self (s)
+   66   0.002791   0.001459     let l:now = ale#util#ClockMilliseconds()
+                            
+   66              0.000930     if l:now < get(s:timestamp_map, a:timestamp_key, -1)
+                                    return 0
+                                endif
+                            
+   66              0.000788     let s:timestamp_map[a:timestamp_key] = l:now + s:error_delay_ms
+                            
+   66   0.034226   0.001694     let l:return_value = call(a:func, a:arglist)
+                            
+   66              0.001007     let s:timestamp_map[a:timestamp_key] = -1
+                            
+   66              0.000178     return l:return_value
+
+FUNCTION  <SNR>264_StopCursorTimer()
+Called 140 times
+Total time:   0.001748
+ Self time:   0.001748
+
+count  total (s)   self (s)
+  140              0.000348     if s:cursor_timer != -1
+  140              0.000567         call timer_stop(s:cursor_timer)
+  140              0.000451         let s:cursor_timer = -1
+  140              0.000139     endif
+
+FUNCTION  <SNR>159_GetPythonBinary()
+Called 1 time
+Total time:   0.000462
+ Self time:   0.000417
+
+count  total (s)   self (s)
+    1              0.000005         let python_bin = g:wakatime_PythonBinary
+    1              0.000051         if !filereadable(python_bin)
+    1              0.000005             let paths = ['python3']
+    1   0.000040   0.000016             if s:IsWindows()
+                                            let pyver = 39
+                                            while pyver >= 26
+                                                let paths = paths + [printf('/Python%d/pythonw', pyver), printf('/python%d/pythonw', pyver), printf('/Python%d/python', pyver), printf('/python%d/python', pyver)]
+                                                let pyver = pyver - 1
+                                            endwhile
+                                        else
+    1              0.000021                 let paths = paths + ['/usr/bin/python3', '/usr/local/bin/python3', '/usr/bin/python3.6', '/usr/local/bin/python3.6', '/usr/bin/python', '/usr/local/bin/python', '/usr/bin/python2', '/usr/local/bin/python2']
+    1              0.000002             endif
+    1              0.000011             let paths = paths + ['python']
+    1              0.000002             let index = 0
+    1              0.000004             let limit = len(paths)
+    4              0.000011             while index < limit
+    3              0.000169                 if filereadable(paths[index])
+    1              0.000009                     let python_bin = paths[index]
+    1              0.000002                     let index = limit
+    1              0.000002                 endif
+    3              0.000012                 let index = index + 1
+    3              0.000006             endwhile
+    1              0.000002         endif
+    1   0.000033   0.000012         if s:IsWindows() && filereadable(printf('%sw', python_bin))
+                                        let python_bin = printf('%sw', python_bin)
+                                    endif
+    1              0.000003         return python_bin
+
+FUNCTION  undotree#UndotreeUpdate()
+Called 140 times
+Total time:   0.001090
+ Self time:   0.001090
+
+count  total (s)   self (s)
+  140              0.000549     if !exists('t:undotree')
+  140              0.000261         return
+                                endif
+                                if !exists('w:undotree_id')
+                                    let w:undotree_id = 'id_'.s:getUniqueID()
+                                    call s:log("Unique window id assigned: ".w:undotree_id)
+                                endif
+                                " assume window layout won't change during updating.
+                                let thiswinnr = winnr()
+                                call t:undotree.Update()
+                                " focus moved
+                                if winnr() != thiswinnr
+                                    call s:exec("norm! ".thiswinnr."\<c-w>\<c-w>")
+                                endif
+
+FUNCTION  <SNR>159_SetLastHeartbeatInMemory()
+Called 2 times
+Total time:   0.000020
+ Self time:   0.000020
+
+count  total (s)   self (s)
+    2              0.000019         let s:last_heartbeat = {'last_activity_at': a:last_activity_at, 'last_heartbeat_at': a:last_heartbeat_at, 'file': a:file}
+
+FUNCTION  <SNR>159_HandleActivity()
+Called 140 times
+Total time:   0.031131
+ Self time:   0.011654
+
+count  total (s)   self (s)
+  140   0.010072   0.000897         let file = s:GetCurrentFile()
+  140              0.003157         if !empty(file) && file !~ "-MiniBufExplorer-" && file !~ "--NO NAME--" && file !~ "^term:"
+  140   0.005200   0.000932             let last = s:GetLastHeartbeat()
+  140              0.000432             let now = localtime()
+                            
+                                        " Create a heartbeat when saving a file, when the current file
+                                        " changes, and when still editing the same file but enough time
+                                        " has passed since the last heartbeat.
+  140   0.003055   0.001385             if a:is_write || s:EnoughTimePassed(now, last) || file != last.file
+    1   0.000833   0.000030                 call s:AppendHeartbeat(file, now, a:is_write, last)
+    1              0.000002             else
+  139              0.000509                 if now - s:last_heartbeat.last_activity_at > s:local_cache_expire
+    1   0.000014   0.000007                     call s:SetLastHeartbeatInMemory(now, last.last_heartbeat_at, last.file)
+    1              0.000000                 endif
+  139              0.000107             endif
+                            
+                                        " When buffering heartbeats disabled, no need to re-check the
+                                        " heartbeats buffer.
+  140              0.000281             if s:buffering_heartbeats_enabled
+                            
+                                            " Only send buffered heartbeats every s:send_buffer_seconds
+  140              0.000409                 if now - s:last_sent > s:send_buffer_seconds
+    2   0.003644   0.000090                     call s:SendHeartbeats()
+    2              0.000012                 endif
+  140              0.000106             endif
+  140              0.000106         endif
+
+FUNCTION  lightline#mode()
+Called 111 times
+Total time:   0.000829
+ Self time:   0.000829
+
+count  total (s)   self (s)
+  111              0.000746   return get(s:lightline.mode_map, mode(), '')
+
+FUNCTION  ale#cursor#EchoCursorWarning()
+Called 66 times
+Total time:   0.043772
+ Self time:   0.002834
+
+count  total (s)   self (s)
+   66   0.043616   0.002678     return ale#CallWithCooldown('dont_echo_until', function('s:EchoImpl'), [])
+
+FUNCTION  LineNoIndicator()
+Called 111 times
+Total time:   0.004968
+ Self time:   0.004968
+
+count  total (s)   self (s)
+                              " Zero index line number so 1/3 = 0, 2/3 = 0.5, and 3/3 = 1
+  111              0.000758   let l:current_line = line('.') - 1
+  111              0.000454   let l:total_lines = line('$') - 1
+                            
+  111              0.000266   if l:current_line == 0
+                                let l:index = 0
+                              elseif l:current_line == l:total_lines
+                                let l:index = -1
+                              else
+  111              0.000754     let l:line_no_fraction = floor(l:current_line) / floor(l:total_lines)
+  111              0.000768     let l:index = float2nr(l:line_no_fraction * len(g:line_no_indicator_chars))
+  111              0.000134   endif
+                            
+  111              0.000442   return g:line_no_indicator_chars[l:index]
+
+FUNCTION  <SNR>159_n2s()
+Called 3 times
+Total time:   0.000078
+ Self time:   0.000078
+
+count  total (s)   self (s)
+    3              0.000077         return substitute(printf('%d', a:number), ',', '.', '')
+
+FUNCTION  <SNR>159_IsWindows()
+Called 4 times
+Total time:   0.000083
+ Self time:   0.000083
+
+count  total (s)   self (s)
+    4              0.000054         if has('win32') || has('win64')
+                                        return s:true
+                                    endif
+    4              0.000010         return s:false
+
+FUNCTION  ale#util#BinarySearch()
+Called 66 times
+Total time:   0.001338
+ Self time:   0.001338
+
+count  total (s)   self (s)
+   66              0.000158     let l:min = 0
+   66              0.000424     let l:max = len(a:loclist) - 1
+                            
+   66              0.000158     while 1
+   66              0.000196         if l:max < l:min
+   66              0.000131             return -1
+                                    endif
+                            
+                                    let l:mid = (l:min + l:max) / 2
+                                    let l:item = a:loclist[l:mid]
+                            
+                                    " Binary search for equal buffers, equal lines, then near columns.
+                                    if l:item.bufnr < a:buffer
+                                        let l:min = l:mid + 1
+                                    elseif l:item.bufnr > a:buffer
+                                        let l:max = l:mid - 1
+                                    elseif l:item.lnum < a:line
+                                        let l:min = l:mid + 1
+                                    elseif l:item.lnum > a:line
+                                        let l:max = l:mid - 1
+                                    else
+                                        " This part is a small sequential search.
+                                        let l:index = l:mid
+                            
+                                        " Search backwards to find the first problem on the line.
+                                        while l:index > 0&& a:loclist[l:index - 1].bufnr == a:buffer&& a:loclist[l:index - 1].lnum == a:line
+                                            let l:index -= 1
+                                        endwhile
+                            
+                                        " Find the last problem on or before this column.
+                                        while l:index < l:max&& a:loclist[l:index + 1].bufnr == a:buffer&& a:loclist[l:index + 1].lnum == a:line&& a:loclist[l:index + 1].col <= a:column
+                                            let l:index += 1
+                                        endwhile
+                            
+                                        " Scan forwards to find the last item on the column for the item
+                                        " we found, which will have the most serious problem.
+                                        let l:item_column = a:loclist[l:index].col
+                            
+                                        while l:index < l:max&& a:loclist[l:index + 1].bufnr == a:buffer&& a:loclist[l:index + 1].lnum == a:line&& a:loclist[l:index + 1].col == l:item_column
+                                            let l:index += 1
+                                        endwhile
+                            
+                                        return l:index
+                                    endif
+                                endwhile
+
+FUNCTION  lightline#update_once()
+Called 140 times
+Total time:   0.002436
+ Self time:   0.002436
+
+count  total (s)   self (s)
+  140              0.001492   if !exists('w:lightline') || w:lightline
+                                call lightline#update()
+                              endif
+
+FUNCTION  <SNR>159_GetCurrentFile()
+Called 140 times
+Total time:   0.009175
+ Self time:   0.009175
+
+count  total (s)   self (s)
+  140              0.009064         return expand("%:p")
+
+FUNCTION  <SNR>159_AppendHeartbeat()
+Called 1 time
+Total time:   0.000803
+ Self time:   0.000138
+
+count  total (s)   self (s)
+    1              0.000004         let file = a:file
+    1              0.000003         if file == ''
+                                        let file = a:last.file
+                                    endif
+    1              0.000002         if file != ''
+    1              0.000003             let heartbeat = {}
+    1              0.000004             let heartbeat.entity = file
+    1   0.000057   0.000022             let heartbeat.time = s:CurrentTimeStr()
+    1              0.000004             let heartbeat.is_write = a:is_write
+    1              0.000007             if !empty(&syntax)
+    1              0.000004                 let heartbeat.language = &syntax
+    1              0.000001             else
+                                            if !empty(&filetype)
+                                                let heartbeat.language = &filetype
+                                            endif
+                                        endif
+    1              0.000015             let s:heartbeats_buffer = s:heartbeats_buffer + [heartbeat]
+    1   0.000652   0.000022             call s:SetLastHeartbeat(a:now, a:now, file)
+                            
+    1              0.000007             if !s:buffering_heartbeats_enabled
+                                            call s:SendHeartbeats()
+                                        endif
+    1              0.000001         endif
+
+FUNCTION  <SNR>159_SanitizeArg()
+Called 12 times
+Total time:   0.000230
+ Self time:   0.000230
+
+count  total (s)   self (s)
+   12              0.000075         let sanitized = shellescape(a:arg)
+   12              0.000112         let sanitized = substitute(sanitized, '!', '\\!', 'g')
+   12              0.000027         return sanitized
+
+FUNCTION  <SNR>264_EchoImpl()
+Called 66 times
+Total time:   0.032532
+ Self time:   0.006537
+
+count  total (s)   self (s)
+   66              0.000237     if !g:ale_echo_cursor
+                                    return
+                                endif
+                            
+                                " Only echo the warnings in normal mode, otherwise we will get problems.
+   66              0.000780     if mode() isnot# 'n'
+                                    return
+                                endif
+                            
+   66   0.022216   0.000864     if ale#ShouldDoNothing(bufnr(''))
+                                    return
+                                endif
+                            
+   66              0.000501     let l:buffer = bufnr('')
+   66   0.005589   0.000946     let [l:info, l:loc] = s:FindItemAtCursor()
+                            
+   66              0.000234     if !empty(l:loc)
+                                    let l:format = ale#Var(l:buffer, 'echo_msg_format')
+                                    let l:msg = ale#GetLocItemMessage(l:loc, l:format)
+                                    call ale#cursor#TruncatedEcho(l:msg)
+                                    let l:info.echoed = 1
+                                elseif get(l:info, 'echoed')
+                                    " We'll only clear the echoed message when moving off errors once,
+                                    " so we don't continually clear the echo line.
+                                    execute 'echo'
+                                    let l:info.echoed = 0
+                                endif
+
+FUNCTION  <SNR>159_JoinArgs()
+Called 1 time
+Total time:   0.000478
+ Self time:   0.000248
+
+count  total (s)   self (s)
+    1              0.000003         let safeArgs = []
+   13              0.000033         for arg in a:args
+   12   0.000402   0.000172             let safeArgs = safeArgs + [s:SanitizeArg(arg)]
+   12              0.000019         endfor
+    1              0.000009         return join(safeArgs, ' ')
+
+FUNCTION  <SNR>177_Highlight_Matching_Pair()
+Called 140 times
+Total time:   0.018203
+ Self time:   0.018203
+
+count  total (s)   self (s)
+                              " Remove any previous match.
+  140              0.000632   if exists('w:paren_hl_on') && w:paren_hl_on
+                                silent! call matchdelete(3)
+                                let w:paren_hl_on = 0
+                              endif
+                            
+                              " Avoid that we remove the popup menu.
+                              " Return when there are no colors (looks like the cursor jumps).
+  140              0.001449   if pumvisible() || (&t_Co < 8 && !has("gui_running"))
+                                return
+                              endif
+                            
+                              " Get the character under the cursor and check if it's in 'matchpairs'.
+  140              0.000505   let c_lnum = line('.')
+  140              0.000449   let c_col = col('.')
+  140              0.000225   let before = 0
+                            
+  140              0.000513   let text = getline(c_lnum)
+  140              0.004034   let matches = matchlist(text, '\(.\)\=\%'.c_col.'c\(.\=\)')
+  140              0.000467   if empty(matches)
+                                let [c_before, c] = ['', '']
+                              else
+  140              0.000921     let [c_before, c] = matches[1:2]
+  140              0.000136   endif
+  140              0.002992   let plist = split(&matchpairs, '.\zs[:,]')
+  140              0.000636   let i = index(plist, c)
+  140              0.000208   if i < 0
+                                " not found, in Insert mode try character before the cursor
+  140              0.000656     if c_col > 1 && (mode() == 'i' || mode() == 'R')
+                                  let before = strlen(c_before)
+                                  let c = c_before
+                                  let i = index(plist, c)
+                                endif
+  140              0.000183     if i < 0
+                                  " not found, nothing to do
+  140              0.000177       return
+                                endif
+                              endif
+                            
+                              " Figure out the arguments for searchpairpos().
+                              if i % 2 == 0
+                                let s_flags = 'nW'
+                                let c2 = plist[i + 1]
+                              else
+                                let s_flags = 'nbW'
+                                let c2 = c
+                                let c = plist[i - 1]
+                              endif
+                              if c == '['
+                                let c = '\['
+                                let c2 = '\]'
+                              endif
+                            
+                              " Find the match.  When it was just before the cursor move it there for a
+                              " moment.
+                              if before > 0
+                                let has_getcurpos = exists("*getcurpos")
+                                if has_getcurpos
+                                  " getcurpos() is more efficient but doesn't exist before 7.4.313.
+                                  let save_cursor = getcurpos()
+                                else
+                                  let save_cursor = winsaveview()
+                                endif
+                                call cursor(c_lnum, c_col - before)
+                              endif
+                            
+                              " Build an expression that detects whether the current cursor position is in
+                              " certain syntax types (string, comment, etc.), for use as searchpairpos()'s
+                              " skip argument.
+                              " We match "escape" for special items, such as lispEscapeSpecial.
+                              let s_skip = '!empty(filter(map(synstack(line("."), col(".")), ''synIDattr(v:val, "name")''), ' . '''v:val =~? "string\\|character\\|singlequote\\|escape\\|comment"''))'
+                              " If executing the expression determines that the cursor is currently in
+                              " one of the syntax types, then we want searchpairpos() to find the pair
+                              " within those syntax types (i.e., not skip).  Otherwise, the cursor is
+                              " outside of the syntax types and s_skip should keep its value so we skip any
+                              " matching pair inside the syntax types.
+                              execute 'if' s_skip '| let s_skip = 0 | endif'
+                            
+                              " Limit the search to lines visible in the window.
+                              let stoplinebottom = line('w$')
+                              let stoplinetop = line('w0')
+                              if i % 2 == 0
+                                let stopline = stoplinebottom
+                              else
+                                let stopline = stoplinetop
+                              endif
+                            
+                              " Limit the search time to 300 msec to avoid a hang on very long lines.
+                              " This fails when a timeout is not supported.
+                              if mode() == 'i' || mode() == 'R'
+                                let timeout = exists("b:matchparen_insert_timeout") ? b:matchparen_insert_timeout : g:matchparen_insert_timeout
+                              else
+                                let timeout = exists("b:matchparen_timeout") ? b:matchparen_timeout : g:matchparen_timeout
+                              endif
+                              try
+                                let [m_lnum, m_col] = searchpairpos(c, '', c2, s_flags, s_skip, stopline, timeout)
+                              catch /E118/
+                                " Can't use the timeout, restrict the stopline a bit more to avoid taking
+                                " a long time on closed folds and long lines.
+                                " The "viewable" variables give a range in which we can scroll while
+                                " keeping the cursor at the same position.
+                                " adjustedScrolloff accounts for very large numbers of scrolloff.
+                                let adjustedScrolloff = min([&scrolloff, (line('w$') - line('w0')) / 2])
+                                let bottom_viewable = min([line('$'), c_lnum + &lines - adjustedScrolloff - 2])
+                                let top_viewable = max([1, c_lnum-&lines+adjustedScrolloff + 2])
+                                " one of these stoplines will be adjusted below, but the current values are
+                                " minimal boundaries within the current window
+                                if i % 2 == 0
+                                  if has("byte_offset") && has("syntax_items") && &smc > 0
+                            	let stopbyte = min([line2byte("$"), line2byte(".") + col(".") + &smc * 2])
+                            	let stopline = min([bottom_viewable, byte2line(stopbyte)])
+                                  else
+                            	let stopline = min([bottom_viewable, c_lnum + 100])
+                                  endif
+                                  let stoplinebottom = stopline
+                                else
+                                  if has("byte_offset") && has("syntax_items") && &smc > 0
+                            	let stopbyte = max([1, line2byte(".") + col(".") - &smc * 2])
+                            	let stopline = max([top_viewable, byte2line(stopbyte)])
+                                  else
+                            	let stopline = max([top_viewable, c_lnum - 100])
+                                  endif
+                                  let stoplinetop = stopline
+                                endif
+                                let [m_lnum, m_col] = searchpairpos(c, '', c2, s_flags, s_skip, stopline)
+                              endtry
+                            
+                              if before > 0
+                                if has_getcurpos
+                                  call setpos('.', save_cursor)
+                                else
+                                  call winrestview(save_cursor)
+                                endif
+                              endif
+                            
+                              " If a match is found setup match highlighting.
+                              if m_lnum > 0 && m_lnum >= stoplinetop && m_lnum <= stoplinebottom 
+                                if exists('*matchaddpos')
+                                  call matchaddpos('MatchParen', [[c_lnum, c_col - before], [m_lnum, m_col]], 10, 3)
+                                else
+                                  exe '3match MatchParen /\(\%' . c_lnum . 'l\%' . (c_col - before) . 'c\)\|\(\%' . m_lnum . 'l\%' . m_col . 'c\)/'
+                                endif
+                                let w:paren_hl_on = 1
+                              endif
+
+FUNCTIONS SORTED ON TOTAL TIME
+count  total (s)   self (s)  function
+  140   0.922282   0.919079  <SNR>197_parse_screen()
+   66   0.043772   0.002834  ale#cursor#EchoCursorWarning()
+   66   0.040938   0.007074  ale#CallWithCooldown()
+   66   0.032532   0.006537  <SNR>264_EchoImpl()
+  140   0.031131   0.011654  <SNR>159_HandleActivity()
+   66   0.021352   0.012881  ale#ShouldDoNothing()
+  140   0.018203             <SNR>177_Highlight_Matching_Pair()
+  140   0.015291   0.008317  ale#cursor#EchoCursorWarningWithDelay()
+  206   0.009495             ale#Var()
+  140   0.009175             <SNR>159_GetCurrentFile()
+   66   0.006627   0.002358  ale#FileTooLarge()
+  111   0.004968             LineNoIndicator()
+   66   0.004643   0.003305  <SNR>264_FindItemAtCursor()
+  140   0.004268             <SNR>159_GetLastHeartbeat()
+    2   0.003554   0.002528  <SNR>159_SendHeartbeats()
+  140   0.003203   0.001531  <SNR>197_create_matches()
+  140   0.002436             lightline#update_once()
+  111   0.002326             lightline#link()
+   66   0.001844             ale#util#InSandbox()
+  140   0.001748             <SNR>264_StopCursorTimer()
+
+FUNCTIONS SORTED ON SELF TIME
+count  total (s)   self (s)  function
+  140   0.922282   0.919079  <SNR>197_parse_screen()
+  140              0.018203  <SNR>177_Highlight_Matching_Pair()
+   66   0.021352   0.012881  ale#ShouldDoNothing()
+  140   0.031131   0.011654  <SNR>159_HandleActivity()
+  206              0.009495  ale#Var()
+  140              0.009175  <SNR>159_GetCurrentFile()
+  140   0.015291   0.008317  ale#cursor#EchoCursorWarningWithDelay()
+   66   0.040938   0.007074  ale#CallWithCooldown()
+   66   0.032532   0.006537  <SNR>264_EchoImpl()
+  111              0.004968  LineNoIndicator()
+  140              0.004268  <SNR>159_GetLastHeartbeat()
+   66   0.004643   0.003305  <SNR>264_FindItemAtCursor()
+   66   0.043772   0.002834  ale#cursor#EchoCursorWarning()
+    2   0.003554   0.002528  <SNR>159_SendHeartbeats()
+  140              0.002436  lightline#update_once()
+   66   0.006627   0.002358  ale#FileTooLarge()
+  111              0.002326  lightline#link()
+   66              0.001844  ale#util#InSandbox()
+  140              0.001748  <SNR>264_StopCursorTimer()
+  140              0.001672  <SNR>197_clear_matches()
+

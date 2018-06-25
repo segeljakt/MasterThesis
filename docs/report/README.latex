@@ -1,0 +1,800 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     File Name           :     Template.latex                                %
+%     Created By          :     Klas Segeljakt                                %
+%     Creation Date       :     [2016-08-24 16:53]                            %
+%     Last Modified       :     [2017-09-14 19:30]                            %
+%     Description         :     Latex template for academic markdown writing  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Document Class, the following variables here can be set in the header of the
+% pandoc document:
+%   * fontsize: Font size of default text (10pt, 11pt or 12pt)
+%   * lang: Language of document??
+%   * papersize: ??
+%   * classoption: ??
+\documentclass[
+      12pt,
+        ]{article}
+% Languages
+\usepackage[english,swedish]{babel}
+% Font family
+  \usepackage{lmodern}             % Default font
+% linestretch: Line spacing
+\usepackage{authblk}
+\usepackage{amssymb,amsmath}       % amssymb,amsmath: American Mathematical Society
+\usepackage{ifxetex,ifluatex}      % ifxetex,ifluatex: Conditionals to check if document is being processed by xetex of luatex
+\usepackage{fixltx2e}              % provides \textsubscript
+\ifnum0\ifxetex1\fi\ifluatex1\fi=0 % if pdftex
+% Font encoding
+\usepackage[
+      T1
+  ]{fontenc}
+% Input encoding
+\usepackage[utf8]{inputenc}
+% Euro symbol
+\else % if luatex or xelatex
+  \ifxetex\usepackage{mathspec}   % mathspec for xetex
+  \else\usepackage{fontspec}      % fontspec for luatex
+\fi
+% Font features
+\defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+% Font families
+% Euro command
+% Main font
+% Sans font
+% Mono font
+  \setmonofont[
+    Mapping=tex-ansi
+    
+  ]{sourcecodeprobold}
+% Math font
+% Chinese/Japanese/Korean main font
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+  \usepackage{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+% Geometry
+  \usepackage[
+          margin=2.54cm
+        ]{geometry}
+% Hyperref - Cross-referencing
+\usepackage[unicode=true]{hyperref}
+% Setup hyperref metadata
+\hypersetup{%
+      pdftitle={A Scala DSL for Rust code generation},
+        pdfauthor={Klas Segeljakt \textless{}klasseg@kth.se\textgreater{}},
+        pdfkeywords={ Continuous Deep Analytics, Domain Specific Langauges, Code Generation,
+ Rust, Scala },
+        pdfborder={0 0 0},
+    breaklinks=true
+}
+\urlstyle{same}  % don't use monospace font for urls
+% Use language package if pdftex
+% Author-year and numbered references
+% biblatex - Bibliography
+% listings - Source code printer
+% lhs - Literate programming
+% Highlight macros?
+  \usepackage{color}
+  \usepackage{fancyvrb}
+  \newcommand{\VerbBar}{|}
+  \newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+  \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+  % Add ',fontsize=\small' for more characters per line
+  \newenvironment{Shaded}{}{}
+  \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+  \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+  \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+  \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+  \newcommand{\BuiltInTok}[1]{#1}
+  \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+  \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+  \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+  \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+  \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+  \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+  \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+  \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+  \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+  \newcommand{\ExtensionTok}[1]{#1}
+  \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+  \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+  \newcommand{\ImportTok}[1]{#1}
+  \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+  \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+  \newcommand{\NormalTok}[1]{#1}
+  \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+  \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+  \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+  \newcommand{\RegionMarkerTok}[1]{#1}
+  \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+  \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+  \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+  \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+  \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+  \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+%
+  \usepackage{%
+    longtable,
+    booktabs
+  }
+  \usepackage{%
+    graphicx,
+    grffile
+  }
+  \makeatletter
+  \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+  \def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+  \makeatother
+  % Scale images if necessary, so that they will not overflow the page
+  % margins by default, and it is still possible to overwrite the defaults
+  % using explicit options in \includegraphics[width, height, ...]{}
+  \setkeys{Gin}{%
+    width=\maxwidth,
+    height=\maxheight,
+    keepaspectratio
+  }
+%
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}
+  }
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+  \setcounter{secnumdepth}{%
+          5
+    }
+%
+  % Redefines (sub)paragraphs to behave more like sections
+  \ifx\paragraph\undefined\else
+     \let\oldparagraph\paragraph\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+  \fi
+  \ifx\subparagraph\undefined\else
+     \let\oldsubparagraph\subparagraph\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+  \fi
+% Header/Footer
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+  \usepackage{multicol}
+  \setlength{\columnsep}{1cm}
+% YAML header includes
+  \usepackage{listings}
+  \usepackage{color}
+  \newcommand{\hideFromPandoc}[1]{#1}
+  \let\Begin\begin \let\End\end
+  \usepackage{float}
+  \let\origcodelisting\codelisting
+  \let\endorigcodelisting\endcodelisting
+  \renewenvironment{codelisting}[1][2] { \expandafter\origcodelisting\expandafter[H] } { \endorigcodelisting }
+  \makeatletter
+  \@ifpackageloaded{subfig}{}{\usepackage{subfig}}
+  \@ifpackageloaded{caption}{}{\usepackage{caption}}
+  \captionsetup[subfloat]{margin=0.5em}
+  \AtBeginDocument{%
+  \renewcommand*\figurename{Figure}
+  \renewcommand*\tablename{Table}
+  }
+  \AtBeginDocument{%
+  \renewcommand*\listfigurename{List of Figures}
+  \renewcommand*\listtablename{List of Tables}
+  }
+  \@ifpackageloaded{float}{}{\usepackage{float}}
+  \floatstyle{ruled}
+  \@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+  \floatname{codelisting}{Listing}
+  \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+  \makeatother
+%-----------------------------------------------------------------------------%
+%                                 Document Structure                          %
+%-----------------------------------------------------------------------------%
+  \title{%
+    A Scala DSL for Rust code generation
+      }
+  \providecommand{\subtitle}[1]{}
+  \subtitle{Master Thesis}
+  \author{\
+          Klas Segeljakt \textless{}klasseg@kth.se\textgreater{}   }
+  \affil{\
+          The Royal Institute of Technology (KTH)   }
+\date{\today}
+\begin{document}
+  % -- Title --
+      \maketitle
+    \thispagestyle{empty}
+    % -- Abstract --
+  \selectlanguage{english}
+      \newpage
+    \begin{abstract}
+       Continuous Deep Analytics is a new type of analytics with performance
+      requirements exceeding what the current generation of distributed
+      systems can offer. The backbone of general purpose data processing
+      systems such as Spark and Flink is the Java Virtual Machine (JVM). While
+      the JVM is portable, it is a also performance bottleneck due to its
+      garbage collector. A portable runtime with high-performance, capable of
+      running efficiently on heterogeneous architectures, is needed. We have
+      developed a code generator as a framework for this runtime. Instead of
+      running portable but slow Java code, optimized Rust code will be
+      generated and cross compiled to different architectures. By generating
+      Rust code, as opposed to C or C++ code which is the common approach, we
+      achieve stronger safety guarantees. The code generator will be used in a
+      five year project by KTH and RISE SICS. In this project a new
+      distributed system will be developed to meet the demands of CDA. Due to
+      time constraints, the generator is at present restricted to a sample of
+      the Rust language. It is however designed to be extensible in respect to
+      adding new constructs. Adding full support for all of Rust's features is
+      left for future work.
+    \end{abstract}
+    \providecommand{\keywords}[1]{\textbf{\textit{Keywords---}} #1}
+      \keywords{Continuous Deep Analytics, Domain Specific Langauges, Code Generation,
+Rust, Scala}
+    \selectlanguage{swedish}
+      \newpage
+    \begin{abstract}
+      N/A
+    \end{abstract}
+    \selectlanguage{english}
+  % -- Between Abstract and TOC --
+    % -- Table of Contents --
+      \newpage
+        \setcounter{tocdepth}{3}
+    \tableofcontents
+    \newpage
+    % -- List of tables --
+      \listoftables
+    % -- List of figures --
+      \listoffigures
+    % -- List of listings --
+      \listoflistings
+    % -- Body --
+  % pandoc-xnos: macro to create a caption without a prefix
+  \makeatletter
+  \def\LT@makenoprefixcaption#1#2#3{%
+    \LT@mcol\LT@cols c{\hbox to\z@{\hss\parbox[t]\LTcapwidth{
+      \sbox\@tempboxa{#1{}#3}
+      \ifdim\wd\@tempboxa>\hsize
+        #1{}#3
+      \else
+        \hbox to\hsize{\hfil\box\@tempboxa\hfil}%
+      \fi
+      \endgraf\vskip\baselineskip}
+    \hss}}}
+  \makeatother
+  
+  % pandoc-tablenos: save original macros
+  \makeatletter
+  \let\LT@oldmakecaption=\LT@makecaption
+  \let\oldthetable=\thetable
+  \let\oldtheHtable=\theHtable
+  \makeatother
+  
+  % pandoc-tablenos: environment disables table caption prefixes
+  \makeatletter
+  \newcounter{tableno}
+  \newenvironment{no-prefix-table-caption}{
+    \let\LT@makecaption=\LT@makenoprefixcaption
+    \renewcommand\thetable{x.\thetableno}
+    \renewcommand\theHtable{x.\thetableno}
+    \stepcounter{tableno}
+  }{
+    \let\thetable=\oldthetable
+    \let\theHtable=\oldtheHtable
+    \let\LT@makecaption=\LT@oldmakecaption
+    \addtocounter{table}{-1}
+  }
+  \makeatother
+  
+  \newpage
+  
+  \hypertarget{acronyms}{%
+  \section{Acronyms}\label{acronyms}}
+  
+  \begin{no-prefix-table-caption}
+  
+  \begin{longtable}[]{@{}ll@{}}
+  \toprule
+  Acronym & Expansion\tabularnewline
+  \midrule
+  \endhead
+  CDA & Continuous Deep Analytics\tabularnewline
+  AST & Abstract Syntax Tree\tabularnewline
+  IR & Intermediate Representation\tabularnewline
+  DSL & Domain Specific Language\tabularnewline
+  GPL & General Purpose Language\tabularnewline
+  JVM & Java Virtual Machine\tabularnewline
+  UDF & User Defined Function\tabularnewline
+  FOAS & First Order Abstract Syntax\tabularnewline
+  HOAS & Higher Order Abstract Syntax\tabularnewline
+  SFI & Software Fault Isolation\tabularnewline
+  IFC & Static Information Control\tabularnewline
+  \bottomrule
+  \end{longtable}
+  
+  \end{no-prefix-table-caption}
+  
+  \newpage
+  
+  \hypertarget{implementation}{%
+  \section{Implementation}\label{implementation}}
+  
+  The implementation is in pure Scala with one dependency to the Shapeless
+  library. Usage of macros is sparse.
+  
+  \hypertarget{shallow-embedded-string-interpolator}{%
+  \subsection{Shallow Embedded String
+  Interpolator}\label{shallow-embedded-string-interpolator}}
+  
+  The string interpolator
+  
+  \hypertarget{top-level-hierarchy}{%
+  \subsection{Top-level hierarchy}\label{top-level-hierarchy}}
+  
+  The top-level hierarchy between node categories is illustrated in
+  lst.~\ref{lst:toplvl}. Nodes are required to implement the
+  \VERB|\NormalTok{show}| method from the \VERB|\NormalTok{Showable}|. The
+  \texttt{show} method generates code by directly printing it to a file
+  with a designated \VERB|\NormalTok{PrintWriter}|.
+  \VERB|\NormalTok{ShowName}| and \VERB|\NormalTok{Show}| are type classes
+  for showing types. Expressions, let- and item declarations can all occur
+  in statement position.
+  
+  \begin{codelisting}
+  
+  \caption{Top level hierarchy.}
+  
+  \hypertarget{lst:toplvl}{%
+  \label{lst:toplvl}}%
+  \begin{Shaded}
+  \begin{Highlighting}[]
+  \CommentTok{// Interpretations}
+  \KeywordTok{trait}\NormalTok{ Showable \{ }\KeywordTok{def} \FunctionTok{show}\NormalTok{(pw: PrintWriter): Unit \}}
+  \KeywordTok{trait}\NormalTok{ ShowName[T] }\KeywordTok{extends}\NormalTok{ Showable }\CommentTok{// Type class}
+  \KeywordTok{trait}\NormalTok{ Show[T]     }\KeywordTok{extends}\NormalTok{ Showable }\CommentTok{// Type class}
+  \CommentTok{// Constructs}
+  \KeywordTok{trait}\NormalTok{ Node        }\KeywordTok{extends}\NormalTok{ Showable }\CommentTok{// AST node}
+  \KeywordTok{trait}\NormalTok{ Pat         }\KeywordTok{extends}\NormalTok{ Node     }\CommentTok{// Pattern}
+  \KeywordTok{trait}\NormalTok{ Stm         }\KeywordTok{extends}\NormalTok{ Node     }\CommentTok{// Statement}
+  \KeywordTok{trait}\NormalTok{ Exp[T]      }\KeywordTok{extends}\NormalTok{ Stm      }\CommentTok{// Expression}
+  \KeywordTok{trait}\NormalTok{ PlaceExp[T] }\KeywordTok{extends}\NormalTok{ Exp[T]   }\CommentTok{// Place Expression}
+  \KeywordTok{trait}\NormalTok{ Item        }\KeywordTok{extends}\NormalTok{ Stm      }\CommentTok{// Item declaration}
+  \end{Highlighting}
+  \end{Shaded}
+  
+  \end{codelisting}
+  
+  All nodes are case classes. As an example, the root of the AST is a
+  \VERB|\NormalTok{TaskFile}| node (lst.~\ref{lst:taskfile}) taking a
+  variable number of item declarations. Code for
+  \VERB|\NormalTok{TaskFile}| is generated by invoking
+  \VERB|\NormalTok{show}| on its item declarations. For convenience, an
+  implicit class with a method \VERB|\NormalTok{sep}| is implemented for
+  showing delimited sequences of nodes.
+  
+  \begin{codelisting}
+  
+  \caption{TaskFile implementation.}
+  
+  \hypertarget{lst:taskfile}{%
+  \label{lst:taskfile}}%
+  \begin{Shaded}
+  \begin{Highlighting}[]
+  \KeywordTok{case} \KeywordTok{class} \FunctionTok{TaskFile}\NormalTok{(items: Item*) }\KeywordTok{extends}\NormalTok{ Node \{}
+    \KeywordTok{def} \FunctionTok{show}\NormalTok{(pw: PrintWriter) = items.}\FunctionTok{sep}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{).}\FunctionTok{show}\NormalTok{(pw)}
+  \NormalTok{\}}
+  \end{Highlighting}
+  \end{Shaded}
+  
+  \end{codelisting}
+  
+  \hypertarget{types}{%
+  \subsection{Types}\label{types}}
+  
+  Rust's types are either proper types or polymorphic types. The DSL
+  represents the former directly as proper Scala types, e.g.,
+  \VERB|\NormalTok{i32}| in lst.~\ref{lst:types}. Polymorphic types are
+  depicted as Scala types with one HList type parameter, e.g.,
+  \VERB|\NormalTok{HashMap[i32::bool::HNil]}|. The
+  \VERB|\NormalTok{HList}| contains the generics and lifetime parameters
+  of the type. References are represented as \VERB|\NormalTok{ref[L,T]}|
+  where \VERB|\NormalTok{L}| is a lifetime and \VERB|\NormalTok{T}| is a
+  type.
+  
+  \begin{codelisting}
+  
+  \caption{Types}
+  
+  \hypertarget{lst:types}{%
+  \label{lst:types}}%
+  \begin{Shaded}
+  \begin{Highlighting}[]
+  \KeywordTok{trait}\NormalTok{ i32; }\KeywordTok{trait}\NormalTok{ bool; }\KeywordTok{trait}\NormalTok{ HashMap[T]; }\KeywordTok{trait}\NormalTok{ static; }\KeywordTok{trait}\NormalTok{ ref[L,T]}
+  \CommentTok{// Example}
+  \KeywordTok{type}\NormalTok{ A = i32                      }\CommentTok{// i32}
+  \KeywordTok{type}\NormalTok{ B = HashMap[i32::bool::HNil] }\CommentTok{// HashMap<i32,bool>}
+  \KeywordTok{type}\NormalTok{ C = ref[static,i32]          }\CommentTok{// &'static i32}
+  \end{Highlighting}
+  \end{Shaded}
+  
+  \end{codelisting}
+  
+  Type and lifetime annotations are a prerequisite for item declarations.
+  The DSL uses a type class \VERB|\NormalTok{Show[T]}| to show a type
+  \VERB|\NormalTok{T}|. By default, implicit resolution for a type
+  \VERB|\NormalTok{Show[HashMap[i32::bool::HNil]]}| should yield
+  \VERB|\StringTok{"HashMap<i32,bool>"}|. A second type class
+  \VERB|\NormalTok{ShowName[T]}| exists for only showing the name of a
+  type, e.g., \VERB|\NormalTok{ShowName[HashMap[i32::bool::HNil]]]}|
+  should output \VERB|\StringTok{"HashMap"}|. In lst.~\ref{lst:impl4}, the
+  type class instance \VERB|\NormalTok{showName}| extracts a type's name
+  from a \VERB|\NormalTok{ClassTag}| and prints it. The
+  \VERB|\NormalTok{showProper}| and \VERB|\NormalTok{showPoly}| instances
+  show proper types and polymorphic types respectively. There is no
+  ambiguity between the two as the latter has a more specific return type.
+  
+  \begin{codelisting}
+  
+  \caption{Type class instances for showing types.}
+  
+  \hypertarget{lst:impl4}{%
+  \label{lst:impl4}}%
+  \begin{Shaded}
+  \begin{Highlighting}[]
+  \KeywordTok{implicit} \KeywordTok{def}\NormalTok{ showName[T](}\KeywordTok{implicit}\NormalTok{ ev: ClassTag[T]): ShowName[T] =}
+  \NormalTok{  pw => pw.}\FunctionTok{print}\NormalTok{(ev.}\FunctionTok{toString}\NormalTok{.}\FunctionTok{split}\NormalTok{(}\StringTok{"(}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{.|}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{$)"}\NormalTok{).}\FunctionTok{last}\NormalTok{)}
+  
+  \KeywordTok{implicit} \KeywordTok{def}\NormalTok{ showProper[T](}\KeywordTok{implicit}\NormalTok{ ev: ShowName[T]): Show[T] =}
+  \NormalTok{  pw => ev.}\FunctionTok{show}\NormalTok{(pw)}
+  
+  \KeywordTok{implicit} \KeywordTok{def}\NormalTok{ showPoly[A[_], B <: HList, C <: HList]}
+  \NormalTok{(}\KeywordTok{implicit}\NormalTok{ ev0: ShowName[A[_]],}
+  \NormalTok{          ev1: LiftAll.}\FunctionTok{Aux}\NormalTok{[Show, B, C],}
+  \NormalTok{          ev2: ToTraversable.}\FunctionTok{Aux}\NormalTok{[C, List, Show[_]]}
+  \NormalTok{): Show[A[B]] =}
+  \NormalTok{  pw => show}\StringTok{"$ev0<$\{ev1.instances.toList[Show[_]].sep("}\NormalTok{,}\StringTok{")\}>"}\NormalTok{(pw)}
+  
+  \CommentTok{// Example}
+  \NormalTok{implicitly[Show[HashMap[i32::bool::HNil]]].}\FunctionTok{show}\NormalTok{(pw)}
+  \CommentTok{// HashMap<i32,bool>}
+  \end{Highlighting}
+  \end{Shaded}
+  
+  \end{codelisting}
+  
+  A type \VERB|\NormalTok{Show[HashMap[i32::bool::HNil]]}| will resolve to
+  \VERB|\NormalTok{showPolyType}| which in turn requests evidence for
+  \VERB|\NormalTok{ShowName[HashMap[_]]}| to extract the name
+  \VERB|\StringTok{"HashMap"}|. Afterwards, Shapeless'
+  \VERB|\NormalTok{LiftAll}| retrieves the \VERB|\NormalTok{Show}| type
+  class instance for each element in \VERB|\NormalTok{i32::bool::HNil}|.
+  Finally, Shapeless' \VERB|\NormalTok{ToList}| transforms the result of
+  \VERB|\NormalTok{LiftAll}| into a \VERB|\NormalTok{List[Show[_]]}|. A
+  string interpolator \VERB|\NormalTok{show}| is implemented for showing a
+  string, spliced with objects of type \VERB|\NormalTok{Showable}|. For
+  example, \VERB|\NormalTok{show}\StringTok{"<$x>"}\NormalTok{(pw)}| will
+  expand to
+  \VERB|\NormalTok{\{pw.}\FunctionTok{print}\NormalTok{(}\StringTok{"<"}\NormalTok{); x.}\FunctionTok{show}\NormalTok{(pw); pw.}\FunctionTok{print}\NormalTok{(}\StringTok{">"}\NormalTok{)\}}|.
+  
+  It is possible to override what a type generates to by defining a custom
+  type class instance of \VERB|\NormalTok{ShowName}| as displayed in
+  lst.~\ref{lst:override}. For example, Rust's unit type \texttt{()} can
+  be expressed by overriding \texttt{unit}.
+  
+  \begin{codelisting}
+  
+  \caption{Overriding types.}
+  
+  \hypertarget{lst:override}{%
+  \label{lst:override}}%
+  \begin{Shaded}
+  \begin{Highlighting}[]
+  \KeywordTok{trait} \DataTypeTok{unit}
+  \KeywordTok{implicit} \KeywordTok{val}\NormalTok{ showunit:    ShowName[}\DataTypeTok{unit}\NormalTok{]       = () => }\StringTok{"()"}
+  \KeywordTok{implicit} \KeywordTok{val}\NormalTok{ showHashMap: ShowName[HashMap[_]] = () => }\StringTok{"BinaryTree"}
+  \CommentTok{// Example}
+  \NormalTok{implicitly[Show[HashMap[i32::}\DataTypeTok{unit}\NormalTok{::HNil]]].}\FunctionTok{show}\NormalTok{(pw)}
+  \CommentTok{// "BinaryTree<i32,()>"}
+  \end{Highlighting}
+  \end{Shaded}
+  
+  \end{codelisting}
+  
+  \hypertarget{expressions}{%
+  \subsection{Expressions}\label{expressions}}
+  
+  Every expression is parameterized by an invariant type parameter,
+  indicating what the expression evaluates to. One class of expression are
+  literals, illustrated in fig.~\ref{fig:lit}. The value a literal
+  evaluates to is represented as a string.
+  
+  \begin{codelisting}
+  
+  \caption{Add}
+  
+  \hypertarget{lst:lit}{%
+  \label{lst:lit}}%
+  \begin{Shaded}
+  \begin{Highlighting}[]
+  \KeywordTok{case} \KeywordTok{class}\NormalTok{ Lit[T](value: String) }\KeywordTok{extends}\NormalTok{ Exp[T] \{}
+    \KeywordTok{def} \FunctionTok{show}\NormalTok{(pw: PrintWriter) = pw.}\FunctionTok{print}\NormalTok{(value)}
+  \NormalTok{\}}
+  \CommentTok{// Example}
+  \KeywordTok{val}\NormalTok{ i = Lit[i32](}\StringTok{"1"}\NormalTok{)}
+  \KeywordTok{val}\NormalTok{ b = Lit[bool](}\StringTok{"true"}\NormalTok{)}
+  \NormalTok{i.}\FunctionTok{show}\NormalTok{(pw) }\CommentTok{// 1}
+  \NormalTok{b.}\FunctionTok{show}\NormalTok{(pw) }\CommentTok{// true}
+  \end{Highlighting}
+  \end{Shaded}
+  
+  \end{codelisting}
+  
+  \hypertarget{unary-operators}{%
+  \subsection{Unary Operators}\label{unary-operators}}
+  
+  Rust has unary and binary operators, highlighted in tbl.~\ref{tbl:ops}.
+  Scala is able to overload the unary operators \{\texttt{+}, \texttt{-},
+  \texttt{!}, \texttt{\textasciitilde{}}\}. Other operators can be
+  programmed as regular methods, and as a result require parentheses at
+  the use-site. Lst.~\ref{lst:unary} defines \{\texttt{\&}, \texttt{*},
+  \texttt{!}\}, i.e., reference-of, dereference, and logic negation. The
+  \texttt{\&} operator is a regular method which wraps a reference around
+  a type. The \texttt{*} operator does the reverse and produces a place
+  expression. Finally, \texttt{!} is an extension method for boolean
+  expressions.
+  
+  \hypertarget{binary-operators}{%
+  \subsection{Binary Operators}\label{binary-operators}}
+  
+  \begin{longtable}[]{@{}ll@{}}
+  \caption{Rust's operators {[}1{]}. \label{tbl:ops}}\tabularnewline
+  \toprule
+  Category & Symbols\tabularnewline
+  \midrule
+  \endfirsthead
+  \toprule
+  Category & Symbols\tabularnewline
+  \midrule
+  \endhead
+  Unary & \texttt{-\ \ !\ \ \&\ \ *}\tabularnewline
+  Binary-Arithmetic &
+  \texttt{+\ \ -\ \ *\ \ /\ \ \%\ \ +=\ \ -=\ \ *=\ \ /=\ \ \%=}\tabularnewline
+  Binary-Relational &
+  \texttt{\textless{}\ \ \textgreater{}\ \ \textless{}=\ \ \textgreater{}=\ \ ==\ \ !=}\tabularnewline
+  Binary-Logical & \texttt{\&\&\ \ \textbar{}\textbar{}}\tabularnewline
+  Binary-Bitwise &
+  \texttt{\^{}\ \ \&\ \ \textbar{}\ \ \textless{}\textless{}\ \ \textgreater{}\textgreater{}\ \ \^{}=\ \ \&=\ \ \textless{}\textless{}=\ \ \textgreater{}\textgreater{}=}\tabularnewline
+  Other &
+  \texttt{;\ \ =\ \ \_\ \ :\ \ .\ \ ..\ \ ...\ \ @\ \ ?}\tabularnewline
+  \bottomrule
+  \end{longtable}
+  
+  \begin{codelisting}
+  
+  \caption{Unary operators}
+  
+  \hypertarget{lst:unary}{%
+  \label{lst:unary}}%
+  \begin{Shaded}
+  \begin{Highlighting}[]
+  \KeywordTok{def}\NormalTok{ &[T](v: Exp[T]) = }\KeywordTok{new}\NormalTok{ Exp[ref[static,T]] \{}
+    \KeywordTok{def} \FunctionTok{show}\NormalTok{(pw: PrintWriter) = show}\StringTok{"(&$v)"}\NormalTok{(pw)}
+  \NormalTok{\}}
+  \KeywordTok{def}\NormalTok{ *[T](v: Exp[ref[_,T]]) = }\KeywordTok{new}\NormalTok{ PlaceExp[T] \{}
+    \KeywordTok{def} \FunctionTok{show}\NormalTok{(pw: PrintWriter) = show}\StringTok{"(*$v)"}\NormalTok{(pw)}
+  \NormalTok{\}}
+  \KeywordTok{implicit} \KeywordTok{class} \FunctionTok{Logical}\NormalTok{(v: Exp[bool]) \{}
+    \KeywordTok{def}\NormalTok{ unary_! = }\KeywordTok{new}\NormalTok{ Exp[bool] \{ }\KeywordTok{def} \FunctionTok{show}\NormalTok{(pw: PrintWriter) = show}\StringTok{"(!$v)"}\NormalTok{(pw) \}}
+  \NormalTok{\}}
+  \CommentTok{// Example}
+  \KeywordTok{val}\NormalTok{ val1 = *(&(i))}
+  \KeywordTok{val}\NormalTok{ val2 = !b}
+  \NormalTok{val1.}\FunctionTok{show}\NormalTok{(pw) }\CommentTok{// *(&(1)))}
+  \NormalTok{val2.}\FunctionTok{show}\NormalTok{(pw) }\CommentTok{// !true}
+  \end{Highlighting}
+  \end{Shaded}
+  
+  \end{codelisting}
+  
+  Binary operators are programmed as extension methods.
+  Lst.~\ref{lst:binary} defines `\texttt{+}', `\texttt{:=}' and
+  `\texttt{\#:}' which are equivalent to `\texttt{+}', `\texttt{=}' and
+  `\texttt{;}'. The `\texttt{=:}' operator assigns a value to a place
+  expression, requiring both operands to be of the same type. The
+  `\texttt{\#:}' operator terminates a statement followed by an
+  expression. Both `\texttt{=:}' and `\texttt{\#:}' end with `\texttt{:}'
+  and are in consequence right-associative. Right-associativity for
+  `\texttt{\#:}' implicates \texttt{\{a\ \#:\ b\ \#:\ c;\}} is evaluated
+  as \texttt{\{a;\{b;\{c;\}\}\}} instead of \texttt{\{\{\{a\};b\}c;\}}.
+  All assignment operators are right-associative, e.g.,
+  \texttt{x\ +=\ y\ +\ z} is evaluated as \texttt{x\ +=\ (y\ +\ z)}.
+  Certain operators, such as relational operators require parentheses,
+  e.g., \texttt{(x\ ==\ y)\ ==\ z}. The remaining operators are
+  left-associative.
+  
+  \begin{codelisting}
+  
+  \caption{Binary operators for addition, assignment, and statement termination.}
+  
+  \hypertarget{lst:binary}{%
+  \label{lst:binary}}%
+  \begin{Shaded}
+  \begin{Highlighting}[]
+  \KeywordTok{implicit} \KeywordTok{class}\NormalTok{ Add[T](}\KeywordTok{val}\NormalTok{ l: Exp[T]) \{}
+    \KeywordTok{def}\NormalTok{ +(r: Exp[T]) = }\KeywordTok{new}\NormalTok{ Stm  \{ }\KeywordTok{def}\NormalTok{ show = s}\StringTok{"($\{l.show\} + $\{r.show\})"}\NormalTok{ \}}
+  \NormalTok{\}}
+  \KeywordTok{implicit} \KeywordTok{class}\NormalTok{ Assign[T](}\KeywordTok{val}\NormalTok{ r: PlaceExp[T]) \{}
+    \KeywordTok{def}\NormalTok{ =:(l: Exp[T]) = }\KeywordTok{new}\NormalTok{ Stm \{ }\KeywordTok{def}\NormalTok{ show = s}\StringTok{"$\{l.show\} = $\{r.show\}"}\NormalTok{   \}}
+  \NormalTok{\}}
+  \KeywordTok{implicit} \KeywordTok{class}\NormalTok{ Terminate[T](}\KeywordTok{val}\NormalTok{ r: Exp[T]) \{}
+    \KeywordTok{def}\NormalTok{ #:(l: Stm) = }\KeywordTok{new}\NormalTok{ Exp[T] \{ }\KeywordTok{def}\NormalTok{ show = s}\StringTok{"$\{l.show\}; $\{r.show\}"}\NormalTok{    \}}
+  \NormalTok{\}}
+  \CommentTok{// Example}
+  \KeywordTok{val}\NormalTok{ exps = val1 := (i+i)) #: val2}
+  \NormalTok{exps.}\FunctionTok{show}\NormalTok{(pw) }\CommentTok{// (*(&1)) = (1+1); !true}
+  \end{Highlighting}
+  \end{Shaded}
+  
+  \end{codelisting}
+  
+  Next are control-flow expressions. Lst.~\ref{lst:cflow} defines the
+  \texttt{If} which requires a condition and if-clause. \texttt{If} can be
+  chained into an \texttt{Else}, given that the if- and else-clause
+  evaluate to the same type.
+  
+  \begin{codelisting}
+  
+  \caption{If-Else and While}
+  
+  \hypertarget{lst:cflow}{%
+  \label{lst:cflow}}%
+  \begin{Shaded}
+  \begin{Highlighting}[]
+  \KeywordTok{case} \KeywordTok{class}\NormalTok{ If[T](cond: Exp[bool])(ifc: Exp[T]) }\KeywordTok{extends}\NormalTok{ Exp[T] \{}
+    \KeywordTok{def} \FunctionTok{Else}\NormalTok{(elsec: Exp[T]) = }\KeywordTok{new}\NormalTok{ Exp[T] \{}
+      \KeywordTok{def} \FunctionTok{show}\NormalTok{(pw: PrintWriter) = show}\StringTok{"if $cond \{ $ifc \} else \{ $elsec \}"}\NormalTok{(pw)}
+  \NormalTok{  \}}
+    \KeywordTok{def} \FunctionTok{show}\NormalTok{(pw: PrintWriter) = show}\StringTok{"if $cond \{ $ifc \}"}\NormalTok{(pw)}
+  \NormalTok{\}}
+  \CommentTok{// Example}
+  \KeywordTok{val}\NormalTok{ if_else = }\FunctionTok{If}\NormalTok{(b) \{ i+i \} Else \{ i \}}
+  \NormalTok{if_else.}\FunctionTok{show}\NormalTok{(pw) }\CommentTok{// if true \{ 1+1 \} else \{ 1 \}}
+  \end{Highlighting}
+  \end{Shaded}
+  
+  \end{codelisting}
+  
+  A variable is visualized by the DSL as a function taking one argument.
+  For example, \texttt{\{let\ x:\ i32\ =\ 3;\ x+x\}} is isomorphic to
+  \texttt{(\textbar{}x:\ i32\textbar{}\ x+x\ )(3)}. The \texttt{Let} node
+  in lst.~\ref{lst:var}, for generating a \texttt{let} declaration, takes
+  an \texttt{id}, a \texttt{rhs} value and a function \texttt{fn}. The
+  \texttt{rhs} value is bound to a \texttt{variable} with name
+  \texttt{id}. \texttt{Let} evaluates to the \texttt{result} of applying
+  \texttt{fn} to the \texttt{variable}.
+  
+  \begin{codelisting}
+  
+  \caption{Let definition.}
+  
+  \hypertarget{lst:var}{%
+  \label{lst:var}}%
+  \begin{Shaded}
+  \begin{Highlighting}[]
+  \KeywordTok{case} \KeywordTok{class}\NormalTok{ Let[T,O](id: String, rhs: Exp[T])}
+  \NormalTok{                   (fn: Exp[T] => Exp[O]) }\KeywordTok{extends}\NormalTok{ Exp[O] \{}
+    \KeywordTok{val}\NormalTok{ variable = }\KeywordTok{new}\NormalTok{ Exp[T] \{ }\KeywordTok{def} \FunctionTok{show}\NormalTok{(pw: PrintWriter) = id \}}
+    \KeywordTok{val}\NormalTok{ result = }\FunctionTok{fn}\NormalTok{(variable)}
+    \KeywordTok{def} \FunctionTok{show}\NormalTok{(pw: PrintWriter) = show}\StringTok{"\{let $variable = $rhs; $result\}"}\NormalTok{(pw)}
+  \NormalTok{\}}
+  \CommentTok{// Example}
+  \KeywordTok{val}\NormalTok{ let = }\FunctionTok{Let}\NormalTok{(}\StringTok{"x"}\NormalTok{, i) \{ x => x+x \}}
+  \NormalTok{let.}\FunctionTok{show}\NormalTok{(pw) }\CommentTok{// \{let x = 1; (x + x)\}}
+  \end{Highlighting}
+  \end{Shaded}
+  
+  \end{codelisting}
+  
+  \clearpage
+  
+  \hypertarget{functions}{%
+  \subsection{Functions}\label{functions}}
+  
+  A function can have multiple input arguments and one output value. The
+  output value is given by applying the arguments to a function body. Both
+  input and output can be generic. For generics to work, the function
+  needs to be able to require a generic implement a specific trait. The
+  parameters of the fluent interface for functions are declared in
+  lst.~\ref{lst:fnheader}. Functions must have a name, but the rest, i.e.,
+  attributes, bounds, arguments, and body, is optional. Arguments are
+  stored in both a regular \texttt{List} and an \texttt{HList} for
+  convenience. \texttt{I} has the type of each input argument, and
+  \texttt{O} has the output type. The return type of a function is
+  \texttt{unit} unless specified otherwise, hence \texttt{O} is by default
+  inferred to \texttt{unit}.
+  
+  \begin{codelisting}
+  
+  \caption{Function parameters}
+  
+  \hypertarget{lst:fnheader}{%
+  \label{lst:fnheader}}%
+  \begin{Shaded}
+  \begin{Highlighting}[]
+  \KeywordTok{case} \KeywordTok{class}\NormalTok{ Fn[I <: HList, O:Default[}\DataTypeTok{unit}\NormalTok{]#L](}
+  \NormalTok{  name:      String,}
+  \NormalTok{  attrs:     String              = }\StringTok{""}\NormalTok{,}
+  \NormalTok{  bounds:    String              = }\StringTok{""}\NormalTok{,}
+  \NormalTok{  args:      I                   = HNil,}
+  \NormalTok{  argslist:  List[Arg[_]]        = List(),}
+  \NormalTok{  body:      Option[I => Exp[O]] = None}
+  \NormalTok{) }\KeywordTok{extends}\NormalTok{ Exp[O] \{}
+  \end{Highlighting}
+  \end{Shaded}
+  
+  \end{codelisting}
+  
+  Lst.~\ref{lst:arg} describes the argument implementation. An argument
+  may either appear declared in a function signature, inserted at a
+  call-site, or used in a function body. It is also possible to inline a
+  function call on-demand, in which case the argument is declared as local
+  variables. An argument must as a result be able to show its identifier,
+  expression, and type.
+  
+  \begin{codelisting}
+  
+  \caption{Argument definition.}
+  
+  \hypertarget{lst:arg}{%
+  \label{lst:arg}}%
+  \begin{Shaded}
+  \begin{Highlighting}[]
+  \KeywordTok{case} \KeywordTok{class}\NormalTok{ Arg[T](id: String, exp: Exp[T])(}\KeywordTok{implicit}\NormalTok{ ev: Show[T]) }\KeywordTok{extends}\NormalTok{ Exp[T] \{}
+    \KeywordTok{def}\NormalTok{ decl   = }\KeywordTok{new}\NormalTok{ Stm \{ }\KeywordTok{def} \FunctionTok{show}\NormalTok{(pw: PrintWriter) = show}\StringTok{"$id: $ev"}\NormalTok{(pw)       \}}
+    \KeywordTok{def}\NormalTok{ insert = }\KeywordTok{new}\NormalTok{ Stm \{ }\KeywordTok{def} \FunctionTok{show}\NormalTok{(pw: PrintWriter) = show}\StringTok{"$exp"}\NormalTok{(pw)           \}}
+    \KeywordTok{def}\NormalTok{ inline = }\KeywordTok{new}\NormalTok{ Stm \{ }\KeywordTok{def} \FunctionTok{show}\NormalTok{(pw: PrintWriter) = show}\StringTok{"let $id = $exp"}\NormalTok{(pw) \}}
+    \KeywordTok{def} \FunctionTok{show}\NormalTok{(pw: PrintWriter) = show}\StringTok{"$id"}\NormalTok{(pw)}
+  \NormalTok{\}}
+  \end{Highlighting}
+  \end{Shaded}
+  
+  \end{codelisting}
+  
+  A function is staged by assigning the
+  
+  \begin{codelisting}
+  
+  \caption{Staging a function.}
+  
+  \hypertarget{lst:fnstage}{%
+  \label{lst:fnstage}}%
+  \begin{Shaded}
+  \begin{Highlighting}[]
+  \KeywordTok{def} \FunctionTok{setName}\NormalTok{(name: String)      = }\FunctionTok{Fn}\NormalTok{(name, attrs, bounds, args, argslist, None)}
+  \KeywordTok{def} \FunctionTok{setAttrs}\NormalTok{(attrs: String)    = }\FunctionTok{Fn}\NormalTok{(name, attrs, bounds, args, argslist, None)}
+  \KeywordTok{def} \FunctionTok{setBounds}\NormalTok{(bounds: String)  = }\FunctionTok{Fn}\NormalTok{(name, attrs, bounds, args, argslist, None)}
+  \KeywordTok{def}\NormalTok{ addArg[K, V:Show](exp: FieldType[K, Exp[V]])(}\KeywordTok{implicit}\NormalTok{ ev: Witness.}\FunctionTok{Aux}\NormalTok{[K]) = \{}
+    \KeywordTok{val}\NormalTok{ arg = Arg[V](ev.}\FunctionTok{value}\NormalTok{.}\FunctionTok{toString}\NormalTok{, exp)}
+    \FunctionTok{Fn}\NormalTok{(name, attrs, bounds, field[K](arg) :: args, arg :: argslist, None)}
+  \NormalTok{\}}
+  \KeywordTok{def}\NormalTok{ setRet[T: Show]      = Fn[I, T](name, attrs, bounds, args, argslist, None)}
+  \KeywordTok{def} \FunctionTok{setBody}\NormalTok{(body: I => Exp[O]) = }\FunctionTok{Fn}\NormalTok{(name, attrs, bounds, args, argslist, Some(body))}
+  \end{Highlighting}
+  \end{Shaded}
+  
+  \end{codelisting}
+  
+  \hypertarget{refs}{}
+  \leavevmode\hypertarget{ref-RustOperators}{}%
+  {[}1{]} The Rust Team, ``Operators and symbols,'' 2018. {[}Online{]}.
+  Available:
+  \url{https://doc.rust-lang.org/book/second-edition/appendix-02-operators.html}.
+  {[}Accessed: 02-Jun-2018{]}
+  % -- Bibliography --
+    % -- Bibliography --
+    % -- After bibliography --
+  \end{document}

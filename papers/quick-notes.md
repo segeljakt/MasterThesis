@@ -58,3 +58,5 @@ Higher kinded types = Type constructors
 Curried type constructors
 Kind projector
 Type erasure
+
+types in scala are by default invariant
